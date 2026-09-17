@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Synthetix · SaaS Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}
+:focus-visible{outline:2px solid #4b41e1;outline-offset:2px;border-radius:4px;}
+.skip-link{position:absolute;left:-9999px;top:0;background:#fff;color:#0b1c30;padding:.75rem 1rem;z-index:100;border-radius:0 0 8px 0;font-weight:600;}
+.skip-link:focus{left:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{animation:spin .8s linear infinite;}
+@keyframes rowFadeOut{to{opacity:0;transform:translateX(12px);}}
+.row-removing{animation:rowFadeOut .25s ease forwards;}
+@keyframes rowFadeIn{from{opacity:0;transform:translateY(-6px);}}
+.row-adding{animation:rowFadeIn .3s ease;}
+.view.hidden{display:none;}
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"outline":"#76777d","outline-variant":"#c6c6cd","secondary-container":"#645efb","on-error-container":"#93000a","surface-tint":"#565e74","secondary":"#4b41e1","secondary-fixed-dim":"#c3c0ff","surface-container-low":"#eff4ff","inverse-surface":"#213145","on-secondary-fixed":"#0f0069","on-tertiary-fixed":"#002113","on-primary-fixed":"#131b2e","surface-dim":"#cbdbf5","surface-container-lowest":"#ffffff","inverse-primary":"#bec6e0","on-primary-container":"#7c839b","surface-container-high":"#dce9ff","on-secondary":"#ffffff","error-container":"#ffdad6","on-surface-variant":"#45464d","on-tertiary-fixed-variant":"#005236","secondary-fixed":"#e2dfff","surface-bright":"#f8f9ff","surface-container-highest":"#d3e4fe","surface-container":"#e5eeff","surface-variant":"#d3e4fe","tertiary-fixed":"#6ffbbe","on-error":"#ffffff","on-tertiary":"#ffffff","error":"#ba1a1a","on-tertiary-container":"#009668","surface":"#f8f9ff","tertiary-container":"#002113","primary-container":"#131b2e","primary":"#000000","primary-fixed":"#dae2fd","on-secondary-container":"#fffbff","tertiary":"#000000","background":"#f8f9ff","on-secondary-fixed-variant":"#3323cc","on-primary":"#ffffff","on-background":"#0b1c30","on-surface":"#0b1c30","on-primary-fixed-variant":"#3f465c","tertiary-fixed-dim":"#4edea3","primary-fixed-dim":"#bec6e0","inverse-on-surface":"#eaf1ff"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"}}}};</script>
+</head>
+<body class="bg-surface font-sans text-sm text-on-surface antialiased min-h-screen">
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ============================================================ -->
+<!-- VIEW: AUTH (sign in / create account) -->
+<!-- ============================================================ -->
+<div id="view-auth" class="view flex items-center justify-center p-4 sm:p-8 min-h-screen">
+<main class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-[0_4px_6px_-1px_rgba(15,23,42,0.07),0_2px_4px_-2px_rgba(15,23,42,0.05)] p-8">
+<div class="flex flex-col w-full">
+
+<!-- Core Authentication Workflows -->
+<div class="flex flex-col justify-between py-2 sm:py-4">
+<div>
+<div class="flex items-center gap-4 mb-6">
+<div class="w-10 h-10 rounded-lg shadow-sm bg-primary flex items-center justify-center text-on-primary font-bold">S</div>
+<div class="flex flex-col">
+<span class="font-semibold text-lg text-on-surface tracking-tight">Synthetix</span>
+<span class="text-[11px] text-on-surface-variant uppercase tracking-wider">Enterprise Data Infrastructure &amp; AI Ops</span>
+</div>
+</div>
+
+<!-- Auth Mode Segmented Control -->
+<div class="bg-surface-container p-1 rounded-xl flex items-center mb-6">
+<button class="flex-1 py-2 text-center rounded-lg text-sm font-medium transition-all shadow-sm bg-surface-container-lowest text-on-surface" id="tab-signin" onclick="AuthPage.switchTab('signin')" aria-pressed="true">Sign In</button>
+<button class="flex-1 py-2 text-center rounded-lg text-sm font-medium transition-all text-on-surface-variant hover:text-on-surface" id="tab-signup" onclick="AuthPage.switchTab('signup')" aria-pressed="false">Create Account</button>
+</div>
+
+<!-- SSO stack -->
+<div class="flex flex-col gap-2.5 mb-6">
+<button class="w-full h-11 px-4 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-sm font-medium flex items-center justify-center gap-3 transition-colors" type="button" onclick="AuthPage.ssoClick('Google Workspace')">
+<svg class="w-4 h-4" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+<span>Continue with Google Workspace</span>
+</button>
+<div class="grid grid-cols-2 gap-2.5">
+<button class="h-11 px-4 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-sm font-medium flex items-center justify-center gap-2 transition-colors" type="button" onclick="AuthPage.ssoClick('GitHub')">
+<svg class="w-4 h-4 fill-current text-on-surface" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+<span>GitHub</span>
+</button>
+<button class="h-11 px-4 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface text-sm font-medium flex items-center justify-center gap-2 transition-colors" type="button" onclick="AuthPage.ssoClick('SAML SSO')">
+<span class="material-symbols-outlined text-[18px] text-secondary">vpn_key</span>
+<span>SAML SSO</span>
+</button>
+</div>
+</div>
+
+<div class="relative flex items-center justify-center my-4">
+<div class="w-full h-[1px] bg-surface-variant"></div>
+<span class="absolute bg-surface-container-lowest px-3 text-[11px] text-outline uppercase tracking-wider" id="dividerLabel">or sign in with email</span>
+</div>
+
+<!-- Email & Password Form -->
+<form class="space-y-4" id="authForm" novalidate>
+<div id="nameField" class="hidden">
+<label class="text-sm text-on-surface block mb-1.5" for="full-name">Full Name</label>
+<input class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline text-sm focus:outline-none focus:bg-surface-bright shadow-sm transition-all" id="full-name" name="name" type="text" placeholder="Jane Cooper"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1.5">
+<label class="text-sm text-on-surface" for="work-email">Work Email</label>
+<span class="hidden text-[11px] text-on-tertiary-container bg-surface-container-low px-2 py-0.5 rounded" id="email-badge">Domain verified</span>
+</div>
+<div class="relative">
+<input class="w-full h-11 px-3.5 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline text-sm focus:outline-none focus:bg-surface-bright shadow-sm transition-all" id="work-email" name="email" oninput="AuthPage.validateEmailInput(this)" placeholder="name@company.com" required type="email" aria-describedby="email-error"/>
+<div class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-on-tertiary-container" id="email-valid-icon">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<p class="text-xs text-error mt-1 hidden" id="email-error" role="alert"></p>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1.5">
+<label class="text-sm text-on-surface" for="password">Password</label>
+<a class="text-xs text-secondary hover:underline transition-colors cursor-pointer" id="forgotLink" onclick="AuthPage.openForgotModal(event)">Forgot password?</a>
+</div>
+<div class="relative">
+<input class="w-full h-11 pl-3.5 pr-11 rounded-xl bg-surface-container-lowest text-on-surface placeholder:text-outline text-sm focus:outline-none focus:bg-surface-bright shadow-sm transition-all" id="password" name="password" placeholder="••••••••••••" required type="password" aria-describedby="password-error"/>
+<button aria-label="Toggle password visibility" class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors p-1" onclick="AuthPage.togglePasswordVisibility()" type="button">
+<span class="material-symbols-outlined text-[20px]" id="pwd-icon">visibility</span>
+</button>
+</div>
+<p class="text-xs text-error mt-1 hidden" id="password-error" role="alert"></p>
+</div>
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center gap-2.5 cursor-pointer select-none">
+<input checked class="w-4 h-4 rounded bg-surface-container-low text-secondary accent-secondary focus:ring-0 focus:outline-none cursor-pointer" type="checkbox" id="rememberDevice"/>
+<span class="text-sm text-on-surface-variant">Remember this device for 30 days</span>
+</label>
+</div>
+<button class="w-full h-11 mt-2 bg-primary hover:bg-primary-container text-on-primary text-sm font-medium rounded-xl shadow-sm flex items-center justify-center gap-2 transition-colors group cursor-pointer disabled:opacity-70" type="submit" id="submitBtn">
+<span id="btn-submit-label">Sign In to Workspace</span>
+<kbd class="text-[10px] px-1.5 py-0.5 rounded bg-on-primary/20 text-on-primary uppercase tracking-wider group-hover:bg-on-primary/30 transition-colors" id="enterKbd">↵ Enter</kbd>
+</button>
+</form>
+</div>
+
+<div class="pt-6 mt-6 flex flex-wrap items-center justify-between gap-y-2 text-on-surface-variant text-xs">
+<div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">verified</span><span>SOC2 Type II</span></div>
+<span class="text-outline-variant">•</span>
+<div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">shield</span><span>ISO 27001</span></div>
+<span class="text-outline-variant">•</span>
+<div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-on-tertiary-container" style="font-variation-settings: 'FILL' 1;">lock</span><span>GDPR Compliant</span></div>
+</div>
+</div>
+
+</div>
+</main>
+</div>
+
+<!-- Forgot password modal -->
+<div class="app-modal fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity opacity-0 pointer-events-none hidden" id="forgotModal" role="dialog" aria-modal="true" aria-labelledby="forgotTitle" aria-hidden="true">
+<div class="bg-surface-container-lowest rounded-xl max-w-sm w-full p-6 shadow-2xl flex flex-col gap-4" data-modal-panel>
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-semibold text-on-surface" id="forgotTitle">Reset your password</h3>
+<button class="p-1 rounded-lg text-outline hover:bg-surface-container hover:text-on-surface" onclick="closeModalById('forgotModal')" aria-label="Close">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<p class="text-sm text-on-surface-variant -mt-2">We'll send a secure reset link to your work email.</p>
+<form onsubmit="return AuthPage.submitForgot(event)" class="flex flex-col gap-3">
+<input class="w-full h-11 px-3.5 rounded-xl bg-surface-container-low text-on-surface placeholder:text-outline text-sm focus:outline-none focus:bg-surface-bright" type="email" required placeholder="name@company.com" id="forgotEmail"/>
+<button class="w-full h-11 bg-primary hover:bg-primary-container text-on-primary text-sm font-medium rounded-xl shadow-sm transition-colors" type="submit">Send Reset Link</button>
+</form>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- APP SHELL: shared sidebar + header wrapping dashboard & integrations -->
+<!-- ============================================================ -->
+<div id="appShell" class="hidden">
+<!-- ============ SIDEBAR (shared component) ============ -->
+<aside class="fixed left-0 top-0 bottom-0 w-64 bg-surface-container-lowest z-40 flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)] hidden md:flex">
+<div class="flex flex-col">
+<div class="h-16 px-4 flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold text-sm">S</div>
+<div class="flex flex-col"><span class="text-base font-bold text-on-surface tracking-tight leading-none">Synthetix</span><span class="text-[11px] text-on-surface-variant font-medium">Platform v2.4</span></div>
+</div>
+<div class="px-4 py-2">
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container-low">
+<div class="flex items-center gap-2 overflow-hidden"><span class="material-symbols-outlined text-secondary text-[18px]">domain</span><div class="truncate"><p class="text-[13px] font-semibold text-on-surface truncate leading-snug">Acme Corp</p><p class="text-[11px] text-on-surface-variant truncate leading-none">Enterprise Tier</p></div></div>
+<span class="material-symbols-outlined text-outline text-[16px]">unfold_more</span>
+</div>
+</div>
+<div class="px-4 pt-2 pb-1"><span class="text-[11px] uppercase tracking-wider text-outline font-semibold">Main Menu</span></div>
+<nav class="flex flex-col gap-1 px-4" id="sidebarNav">
+<a class="nav-link flex items-center gap-2 px-2 py-2 rounded-xl transition-colors" data-page="dashboard" href="#dashboard" onclick="Router.show('dashboard'); return false;"><span class="material-symbols-outlined text-[18px]">grid_view</span><span>Dashboard</span></a>
+<a class="nav-link flex items-center gap-2 px-2 py-2 rounded-xl transition-colors" data-page="integrations" href="#integrations" onclick="Router.show('integrations'); return false;"><span class="material-symbols-outlined text-[18px]">analytics</span><span>Analytics &amp; API</span></a>
+<a class="nav-link flex items-center gap-2 px-2 py-2 rounded-xl transition-colors" data-page="customers" href="#customers" onclick="Router.show('customers'); return false;"><span class="material-symbols-outlined text-[18px]">group</span><span>Customers &amp; Accounts</span></a>
+<a class="nav-link flex items-center gap-2 px-2 py-2 rounded-xl transition-colors" data-page="billing" href="#billing" onclick="Router.show('billing'); return false;"><span class="material-symbols-outlined text-[18px]">receipt_long</span><span>Billing &amp; Invoices</span></a>
+<a class="nav-link flex items-center gap-2 px-2 py-2 rounded-xl transition-colors" data-page="settings" href="#settings" onclick="Router.show('settings'); return false;"><span class="material-symbols-outlined text-[18px]">manage_accounts</span><span>Settings &amp; Team</span></a>
+</nav>
+</div>
+<div class="p-4 flex flex-col gap-2">
+<div class="p-2 rounded-xl bg-surface-container-low flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#10b981] animate-pulse"></span><span class="text-[11px] font-semibold text-on-surface">System Status</span></div><span class="text-[11px] text-on-surface-variant font-medium">99.99%</span></div>
+<a class="flex items-center gap-2 px-2 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" href="#" onclick="return Nav.notReady('Help & Documentation')"><span class="material-symbols-outlined text-[18px]">help</span><span>Help &amp; Documentation</span></a>
+</div>
+</aside>
+
+<div class="md:pl-64 flex flex-col min-h-screen">
+<header class="fixed top-0 left-0 md:left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl z-30 shadow-[0_1px_8px_rgba(0,0,0,0.04)] flex items-center justify-between px-4 lg:px-6">
+<div class="flex items-center gap-4 flex-1 max-w-xl">
+<div class="flex items-center gap-2 md:hidden"><div class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-on-primary font-bold text-xs">S</div><span class="font-bold text-on-surface">Synthetix</span></div>
+<button class="w-full max-w-sm hidden sm:flex items-center justify-between px-3 py-2 rounded-xl bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors text-left" onclick="showToast('Global command palette — coming soon', 'info')">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-outline">search</span><span class="text-xs text-on-surface-variant">Search metrics, APIs, logs...</span></div>
+<div class="flex items-center gap-1 text-xs bg-surface-container-lowest px-1.5 py-0.5 rounded shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-on-surface-variant"><span class="text-[10px]">⌘</span><span>K</span></div>
+</button>
+</div>
+<div class="flex items-center gap-3 lg:gap-4">
+<div class="hidden xl:flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-low"><span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span><span class="text-[11px] text-on-surface font-semibold">Production · US-East</span></div>
+<div class="relative">
+<button aria-label="Notifications" class="relative p-2 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" onclick="Nav.toggleNotifications()"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-error text-on-error text-[9px] flex items-center justify-center font-bold leading-none">3</span></button>
+</div>
+<div class="relative">
+<button class="flex items-center gap-2 pl-1" id="profileMenuBtn" onclick="Nav.toggleProfileMenu()" aria-haspopup="true" aria-expanded="false">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-semibold text-xs ring-1 ring-outline-variant">SJ</div>
+<div class="hidden lg:flex flex-col text-left"><span class="text-[13px] font-semibold text-on-surface leading-snug">Sarah Jenkins</span><span class="text-[11px] text-on-surface-variant leading-none">VP Engineering</span></div>
+<span class="material-symbols-outlined text-outline text-[16px] hidden lg:inline-block">expand_more</span>
+</button>
+<div class="hidden absolute right-0 top-12 w-48 bg-surface-container-lowest rounded-xl shadow-xl p-1.5 z-40" id="profileMenu" role="menu">
+<button class="w-full text-left px-3 py-2 rounded-lg hover:bg-surface-container-low text-sm text-on-surface flex items-center gap-2" onclick="Nav.notReady('Profile settings')" role="menuitem"><span class="material-symbols-outlined text-[18px]">person</span>Profile</button>
+<button class="w-full text-left px-3 py-2 rounded-lg hover:bg-surface-container-low text-sm text-on-surface flex items-center gap-2" onclick="Nav.notReady('Account preferences')" role="menuitem"><span class="material-symbols-outlined text-[18px]">tune</span>Preferences</button>
+<hr class="my-1 border-surface-container-low"/>
+<button class="w-full text-left px-3 py-2 rounded-lg hover:bg-error-container text-sm text-error flex items-center gap-2" onclick="Nav.logout()" role="menuitem"><span class="material-symbols-outlined text-[18px]">logout</span>Log Out</button>
+</div>
+</div>
+</div>
+</header>
+
+<main id="main-content" class="w-full pt-16 bg-surface flex-1 px-4 lg:px-6 py-6">
+
+<!-- ---------------- VIEW: DASHBOARD ---------------- -->
+<div id="view-dashboard" class="view">
+<div class="flex flex-col w-full">
+
+
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<h1 class="text-2xl text-on-surface font-bold tracking-tight">Operations &amp; Revenue Overview</h1>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-low shadow-sm"><span class="w-2 h-2 rounded-full bg-[#10b981] animate-ping"></span><span class="text-xs font-medium text-on-surface" id="liveClock">LIVE</span></div>
+</div>
+<p class="text-on-surface-variant mt-0.5">Real-time telemetrics, core billing subscriptions, and distributed gateway status.</p>
+</div>
+<div class="flex flex-wrap items-center gap-2">
+<div class="flex items-center bg-surface-container-lowest rounded-xl shadow-sm px-3 py-1.5 gap-2 text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-outline">calendar_today</span>
+<span class="text-[13px] font-semibold">Last 30 Days</span>
+<span class="text-outline-variant text-xs">|</span>
+<span class="text-xs text-on-surface-variant">May 1 - May 30</span>
+<button class="material-symbols-outlined text-[16px] text-outline hover:text-on-surface" onclick="showToast('Date range picker — coming soon', 'info')">expand_more</button>
+</div>
+<button class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-surface-container-lowest shadow-sm hover:bg-surface-container text-on-surface transition-colors text-[13px] font-semibold" id="exportBtn" onclick="DashboardPage.exportReport()">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant" id="exportIcon">download</span><span>Export Report</span>
+</button>
+<button class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-secondary-container text-on-secondary shadow-sm hover:opacity-95 transition-opacity text-[13px] font-semibold" onclick="openModalById('apiKeyModal')">
+<span class="material-symbols-outlined text-[18px]">add</span><span>Create API Key</span>
+</button>
+</div>
+</div>
+
+<!-- KPI cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between"><div><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Monthly Recurring Rev</span><div class="flex items-baseline gap-1 mt-1"><span class="text-2xl font-bold text-on-surface tracking-tight">$128,450</span></div></div><span class="p-2 rounded-xl bg-surface-container-low text-secondary material-symbols-outlined text-[22px]">payments</span></div>
+<div class="mt-4 flex items-center justify-between"><div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-[11px] font-semibold text-[#00875a]"><span class="material-symbols-outlined text-[14px]">trending_up</span><span>+14.2% MoM</span></div></div>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between"><div><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Active Endpoints</span><div class="flex items-baseline gap-1 mt-1"><span class="text-2xl font-bold text-on-surface tracking-tight">1,429</span></div></div><span class="p-2 rounded-xl bg-surface-container-low text-on-surface-variant material-symbols-outlined text-[22px]">hub</span></div>
+<div class="mt-4 flex items-center justify-between"><div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-[11px] font-semibold text-[#00875a]"><span class="material-symbols-outlined text-[14px]">arrow_upward</span><span>+8.1% vs last wk</span></div></div>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between"><div><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Avg Global Latency</span><div class="flex items-baseline gap-1 mt-1"><span class="text-2xl font-bold text-on-surface tracking-tight">38<span class="text-base text-on-surface-variant">ms</span></span></div></div><span class="p-2 rounded-xl bg-surface-container-low text-secondary material-symbols-outlined text-[22px]">speed</span></div>
+<div class="mt-4 flex items-center justify-between"><div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-[11px] font-semibold text-[#00875a]"><span class="material-symbols-outlined text-[14px]">arrow_downward</span><span>-4ms decrease</span></div><span class="text-[11px] text-on-surface-variant font-medium">p99: 82ms</span></div>
+</div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-start justify-between"><div><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Webhook Failures</span><div class="flex items-baseline gap-1 mt-1"><span class="text-2xl font-bold text-on-surface tracking-tight">0.02<span class="text-base text-on-surface-variant">%</span></span></div></div><span class="p-2 rounded-xl bg-surface-container-low text-[#00875a] material-symbols-outlined text-[22px]">verified</span></div>
+<div class="mt-4 flex items-center justify-between"><div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-[11px] font-semibold text-[#00875a]"><span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span><span>Nominal (Target &lt; 0.1%)</span></div><span class="text-xs text-outline">18 / 92.4k</span></div>
+</div>
+</div>
+
+<!-- Chart + health -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4 mb-6">
+<div class="xl:col-span-8 p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+<div><h2 class="text-base font-bold text-on-surface">Throughput &amp; Volume Telemetry</h2><p class="text-xs text-on-surface-variant">Real-time HTTP ingress requests vs recognized ledger revenue</p></div>
+<div class="flex items-center bg-surface-container-low p-1 rounded-xl gap-1" id="chartToggleContainer">
+<button class="px-3 py-1 rounded-lg bg-surface-container-lowest shadow-sm text-xs font-semibold text-on-surface transition-all" id="tab-rev" onclick="DashboardPage.switchChartTab('rev')">Revenue</button>
+<button class="px-3 py-1 rounded-lg text-on-surface-variant hover:text-on-surface text-xs font-semibold transition-all" id="tab-req" onclick="DashboardPage.switchChartTab('req')">API Requests</button>
+<button class="px-3 py-1 rounded-lg text-on-surface-variant hover:text-on-surface text-xs font-semibold transition-all" id="tab-err" onclick="DashboardPage.switchChartTab('err')">Error Rate</button>
+</div>
+</div>
+<div class="relative w-full h-64 my-1 flex flex-col justify-between">
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40"><div class="w-full h-px bg-surface-container-high"></div><div class="w-full h-px bg-surface-container-high"></div><div class="w-full h-px bg-surface-container-high"></div><div class="w-full h-px bg-surface-container-high"></div></div>
+<svg class="w-full h-full relative z-10" fill="none" preserveAspectRatio="none" viewBox="0 0 800 240" id="mainChartSvg">
+<defs><linearGradient id="primaryGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#4b41e1" stop-opacity="0.28"/><stop offset="100%" stop-color="#4b41e1" stop-opacity="0"/></linearGradient></defs>
+<path id="chartPath" d="M0,160 C80,140 160,155 240,110 C320,70 390,95 470,65 C550,35 630,50 710,25 C750,12 780,18 800,10 L800,240 L0,240 Z" fill="url(#primaryGradient)"/>
+<path d="M0,160 C80,140 160,155 240,110 C320,70 390,95 470,65 C550,35 630,50 710,25 C750,12 780,18 800,10" stroke="#4b41e1" stroke-linecap="round" stroke-width="3"/>
+<circle cx="710" cy="25" fill="#4b41e1" r="5" stroke="#ffffff" stroke-width="3"/>
+</svg>
+<div class="absolute right-14 top-4 z-20 bg-primary-container text-on-primary px-2.5 py-1.5 rounded-lg shadow-lg flex flex-col pointer-events-none" id="chartTooltip"><span class="text-[10px] text-outline-variant">May 28 - Peak</span><span class="text-[13px] font-bold">$13,920.40 · 4.8M req</span></div>
+</div>
+<div class="flex items-center justify-between pt-2"><div class="flex items-center gap-4 text-outline text-[11px]"><span>01 May</span><span class="hidden sm:inline">07 May</span><span>14 May</span><span class="hidden sm:inline">21 May</span><span>28 May</span></div></div>
+</div>
+
+<div class="xl:col-span-4 p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2"><h2 class="text-base font-bold text-on-surface">Edge Node Health</h2><span class="px-2 py-0.5 rounded-full bg-surface-container-low text-[#00875a] text-xs font-bold">99.98% SLA</span></div>
+<p class="text-xs text-on-surface-variant mb-4">12 regional clusters operating with zero degraded workloads.</p>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container-low"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span><span class="text-[13px] font-semibold text-on-surface">us-east-1 (N. Virginia)</span></div><span class="text-xs text-on-surface-variant">22ms · 100%</span></div>
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container-low"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span><span class="text-[13px] font-semibold text-on-surface">eu-west-1 (Frankfurt)</span></div><span class="text-xs text-on-surface-variant">34ms · 99.9%</span></div>
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container-low"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#10b981]"></span><span class="text-[13px] font-semibold text-on-surface">ap-southeast-1 (Singapore)</span></div><span class="text-xs text-on-surface-variant">61ms · 100%</span></div>
+</div>
+</div>
+<div class="mt-4 pt-2 flex items-center justify-between"><span class="text-xs text-on-surface-variant">Zero incident alerts in 48h</span><button class="text-xs font-semibold text-secondary hover:underline flex items-center gap-0.5" onclick="Nav.toggleNotifications()"><span>View In-App Logs</span><span class="material-symbols-outlined text-[14px]">arrow_forward</span></button></div>
+</div>
+</div>
+
+<!-- Data table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col mb-6">
+<div class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div><h3 class="text-base font-bold text-on-surface">Recent API Client Subscriptions &amp; Transactions</h3><p class="text-xs text-on-surface-variant">Active developer tokens, tier consumption ceilings, and real-time payment states.</p></div>
+<div class="flex flex-wrap items-center gap-2">
+<div class="relative min-w-[200px] flex-1 sm:flex-none">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-[18px] text-outline">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none focus:bg-surface-container transition-colors placeholder:text-outline" id="clientSearchInput" placeholder="Filter company, key, slug..." type="text" oninput="DashboardPage.applyFilters()"/>
+</div>
+<select class="px-3 py-1.5 bg-surface-container-low rounded-xl text-[13px] font-medium text-on-surface focus:outline-none cursor-pointer" id="planFilter" onchange="DashboardPage.applyFilters()">
+<option value="">All Plans</option><option value="ENTERPRISE">Enterprise</option><option value="STAGING">Staging</option><option value="STARTER">Starter</option>
+</select>
+<select class="px-3 py-1.5 bg-surface-container-low rounded-xl text-[13px] font-medium text-on-surface focus:outline-none cursor-pointer" id="statusFilter" onchange="DashboardPage.applyFilters()">
+<option value="">All Statuses</option><option value="active">Active</option><option value="revoked">Revoked</option>
+</select>
+<button class="px-3 py-1.5 bg-surface-container-low hover:bg-surface-container rounded-xl text-[13px] font-semibold text-on-surface transition-colors flex items-center gap-1" onclick="showToast('Bulk actions applied to selected accounts', 'success')"><span class="material-symbols-outlined text-[16px]">tune</span><span>Bulk Actions</span></button>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead><tr class="bg-surface-container-low text-[11px] uppercase tracking-wider text-outline">
+<th class="py-3 px-4 w-8"><input class="rounded accent-secondary-container cursor-pointer" type="checkbox" aria-label="Select all rows"/></th>
+<th class="py-3 px-4">Client Entity</th><th class="py-3 px-4">Tier Plan</th><th class="py-3 px-4">Key Identifier</th><th class="py-3 px-4">Monthly Quota</th><th class="py-3 px-4">Billing State</th><th class="py-3 px-4">Last Pulse</th><th class="py-3 px-4 text-right">Actions</th>
+</tr></thead>
+<tbody class="divide-y divide-surface-container-low" id="clientsTableBody">
+<tr><td colspan="8" class="py-10 text-center text-on-surface-variant"><span class="material-symbols-outlined spin inline-block align-middle mr-2">progress_activity</span>Loading client accounts…</td></tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="text-xs text-on-surface-variant">Showing <span class="font-semibold text-on-surface text-[13px]" id="rowsShowing">0</span> of <span class="font-semibold text-on-surface text-[13px]" id="rowsTotal">0</span> client keys</div>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-colors text-xs font-semibold flex items-center gap-1" onclick="showToast('You are on the first page', 'info')"><span class="material-symbols-outlined text-[14px]">chevron_left</span><span>Previous</span></button>
+<div class="flex items-center gap-1 px-1"><button class="w-8 h-8 rounded-lg bg-secondary-container text-on-secondary text-xs font-bold">1</button></div>
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container transition-colors text-xs font-semibold flex items-center gap-1" onclick="showToast('No further pages in this demo dataset', 'info')"><span>Next</span><span class="material-symbols-outlined text-[14px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+
+<!-- ---------------- VIEW: INTEGRATIONS ---------------- -->
+<div id="view-integrations" class="view hidden">
+<div class="flex flex-col w-full gap-6">
+
+
+<!-- Alert banner -->
+<div class="relative overflow-hidden rounded-xl bg-error-container p-4 shadow-sm transition-all duration-300" id="alertBanner">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+<div class="flex items-start sm:items-center gap-2 text-on-error-container">
+<span class="material-symbols-outlined text-[20px] text-error flex-shrink-0 animate-pulse">warning</span>
+<div class="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-0.5">
+<span class="text-[13px] font-semibold text-on-error-container">Webhook delivery failure detected</span>
+<span class="hidden sm:inline text-on-error-container/40">•</span>
+<span class="font-mono text-xs text-on-error-container/90">/v1/webhooks/billing (HTTP 502 Bad Gateway)</span>
+<span class="text-xs px-1.5 py-0.5 rounded bg-white/60 text-error font-medium">Retry 3 of 5 active</span>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-auto flex-shrink-0">
+<button class="px-3 py-1 rounded-lg bg-surface-container-lowest text-error text-xs font-semibold hover:bg-surface-container-low transition-colors shadow-sm" onclick="IntegrationsPage.openDrawer('Apex Global Services', 'org_apx_9941a80')">View Debug Trace</button>
+<button aria-label="Dismiss banner" class="p-1 rounded-lg text-on-error-container/70 hover:bg-white/40 transition-colors" onclick="document.getElementById('alertBanner').classList.add('hidden')"><span class="material-symbols-outlined text-[18px]">close</span></button>
+</div>
+</div>
+</div>
+
+<!-- Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2"><span class="text-[11px] uppercase tracking-wider text-outline font-semibold">Developer Platform</span><span class="text-outline-variant text-[10px]">/</span><span class="text-[11px] text-secondary font-semibold">Integrations Hub</span></div>
+<h1 class="text-2xl font-bold text-on-surface tracking-tight">API Integrations &amp; Customer Accounts</h1>
+<p class="text-on-surface-variant max-w-2xl">Manage API credentials, configure automated event endpoints, and monitor token rate throughput across high-frequency client tenants.</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="bg-surface-container-lowest p-2 rounded-xl shadow-sm flex items-center gap-2"><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary"><span class="material-symbols-outlined text-[20px]">sync_alt</span></div><div><p class="text-[11px] text-on-surface-variant">Throughput</p><p class="text-base font-semibold text-on-surface">14.2k <span class="text-xs text-outline font-normal">req/s</span></p></div></div>
+<div class="bg-surface-container-lowest p-2 rounded-xl shadow-sm flex items-center gap-2"><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-[20px] text-tertiary-container">verified_user</span></div><div><p class="text-[11px] text-on-surface-variant">Success Rate</p><p class="text-base font-semibold text-on-surface">99.98%</p></div></div>
+</div>
+</div>
+
+<!-- Tab bar -->
+<div class="flex items-center justify-between overflow-x-auto gap-2 bg-surface-container-low p-1.5 rounded-xl shadow-inner">
+<div class="flex items-center gap-1">
+<button class="tab-btn px-4 py-2 rounded-lg text-[13px] font-semibold bg-surface-container-lowest text-on-surface shadow-sm transition-all flex items-center gap-1.5" id="btn-tab-clients" onclick="IntegrationsPage.switchTab('tab-clients')"><span class="material-symbols-outlined text-[18px]">verified</span><span>Active Clients</span><span class="bg-surface-container px-2 py-0.5 rounded-full text-xs text-on-surface-variant" id="clientCountBadge">4</span></button>
+<button class="tab-btn px-4 py-2 rounded-lg text-[13px] font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest/60 transition-all flex items-center gap-1.5" id="btn-tab-webhooks" onclick="IntegrationsPage.switchTab('tab-webhooks')"><span class="material-symbols-outlined text-[18px]">webhook</span><span>Webhooks &amp; Endpoints</span><span class="w-2 h-2 rounded-full bg-error"></span></button>
+<button class="tab-btn px-4 py-2 rounded-lg text-[13px] font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest/60 transition-all flex items-center gap-1.5" id="btn-tab-telemetry" onclick="IntegrationsPage.switchTab('tab-telemetry')"><span class="material-symbols-outlined text-[18px]">key</span><span>API Keys &amp; Telemetry</span></button>
+<button class="tab-btn px-4 py-2 rounded-lg text-[13px] font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container-lowest/60 transition-all flex items-center gap-1.5" id="btn-tab-logs" onclick="IntegrationsPage.switchTab('tab-logs')"><span class="material-symbols-outlined text-[18px]">terminal</span><span>System Audit Logs</span></button>
+</div>
+<div class="hidden xl:flex items-center gap-1 text-outline pr-2 text-[11px]"><span class="material-symbols-outlined text-[16px]">schedule</span><span>Live refresh: 15s</span></div>
+</div>
+
+<!-- Filter bar -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 bg-surface-container-lowest p-2 rounded-xl shadow-sm">
+<div class="flex flex-1 items-center gap-2">
+<div class="relative flex-1 max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full bg-surface-container-low text-on-surface placeholder:text-outline text-sm pl-10 pr-10 py-2 rounded-lg focus:outline-none focus:bg-surface-container-lowest transition-all" id="clientSearch" placeholder="Search client accounts, secret prefixes, or CIDR blocks..." type="text" oninput="IntegrationsPage.filterClients()"/>
+<div class="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-surface-container-lowest shadow-sm text-xs text-outline pointer-events-none">/</div>
+</div>
+</div>
+<div class="flex items-center gap-1 self-end lg:self-auto">
+<button class="p-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Export CSV Data" onclick="IntegrationsPage.exportCsv()"><span class="material-symbols-outlined text-[18px]">download</span></button>
+<button class="p-2 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Filter columns" onclick="showToast('Column visibility settings — coming soon', 'info')"><span class="material-symbols-outlined text-[18px]">view_column</span></button>
+<button class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container transition-all shadow-sm" onclick="IntegrationsPage.openCreateModal('client')"><span class="material-symbols-outlined text-[18px]">add</span><span>Create Integration</span></button>
+</div>
+</div>
+
+<!-- TAB: Active Clients -->
+<div class="tab-view flex flex-col gap-6" id="view-clients">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead><tr class="bg-surface-container-low text-outline text-[11px] uppercase tracking-wider">
+<th class="py-3 px-4 font-semibold">Account / Client</th><th class="py-3 px-4 font-semibold">Credential Key</th><th class="py-3 px-4 font-semibold">Env</th><th class="py-3 px-4 font-semibold">Allowed Origins / IP</th><th class="py-3 px-4 font-semibold">Rate Cap</th><th class="py-3 px-4 font-semibold">Last Sync</th><th class="py-3 px-4 font-semibold text-center">Status</th><th class="py-3 px-4 font-semibold text-right">Actions</th>
+</tr></thead>
+<tbody class="divide-y divide-surface-container-low" id="integrationsTableBody">
+<tr><td colspan="8" class="py-10 text-center text-on-surface-variant"><span class="material-symbols-outlined spin inline-block align-middle mr-2">progress_activity</span>Loading registered accounts…</td></tr>
+</tbody>
+</table>
+</div>
+<div class="px-4 py-3 bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-2">
+<span class="text-xs text-on-surface-variant">Showing <span class="font-semibold text-on-surface" id="intRowsShowing">0</span> of <span class="font-semibold text-on-surface" id="intRowsTotal">0</span> registered accounts</span>
+</div>
+</div>
+</div>
+
+<!-- TAB: Webhooks (empty state until one is added) -->
+<div class="tab-view hidden flex-col gap-4" id="view-webhooks">
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm flex flex-col items-center justify-center text-center min-h-[440px]" id="webhooksPanel">
+<!-- populated by IntegrationsPage.renderWebhooks() -->
+</div>
+</div>
+
+<!-- TAB: API Keys & Telemetry (loading -> error/retry -> success) -->
+<div class="tab-view hidden flex-col gap-6" id="view-telemetry">
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between mb-4">
+<div><h3 class="text-base font-bold text-on-surface">API Telemetry Stream &amp; Key Verification</h3><p class="text-xs text-on-surface-variant">Live edge metric resolution &amp; background cryptographic hash cache</p></div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-xs text-outline" id="telemetryStatusBadge"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>Streaming telemetry...</span>
+</div>
+<div id="telemetryContent" class="flex flex-col gap-3">
+<!-- populated by IntegrationsPage.loadTelemetry() -->
+</div>
+</div>
+</div>
+
+<!-- TAB: Audit Logs -->
+<div class="tab-view hidden flex-col gap-2" id="view-logs">
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm">
+<div class="flex items-center justify-between pb-2 mb-2 border-b border-surface-container-low"><h3 class="text-base font-semibold text-on-surface">Cryptographic Secret Rotation Logs</h3><span class="text-xs text-outline">Immutable Audit Ledger</span></div>
+<div class="flex flex-col gap-2 font-mono text-xs" id="auditLogList">
+<div class="py-6 text-center text-on-surface-variant"><span class="material-symbols-outlined spin inline-block align-middle mr-2">progress_activity</span>Loading audit ledger…</div>
+</div>
+</div>
+</div>
+
+
+</div>
+</div>
+
+<!-- ---------------- VIEW: CUSTOMERS & ACCOUNTS ---------------- -->
+<div id="view-customers" class="view hidden">
+<div class="flex flex-col w-full gap-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-2xl font-bold text-on-surface tracking-tight">Customers &amp; Accounts</h1>
+<p class="text-on-surface-variant max-w-2xl">Every customer on the platform, their plan, and their current relationship status.</p>
+</div>
+<button class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container transition-all shadow-sm" onclick="CustomersPage.openCreateModal()"><span class="material-symbols-outlined text-[18px]">person_add</span><span>Add Customer</span></button>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Total Customers</span><span class="text-2xl font-bold text-on-surface tracking-tight mt-1" id="custKpiTotal">—</span></div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Active</span><span class="text-2xl font-bold text-on-surface tracking-tight mt-1" id="custKpiActive">—</span></div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Trialing</span><span class="text-2xl font-bold text-on-surface tracking-tight mt-1" id="custKpiTrialing">—</span></div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Combined MRR</span><span class="text-2xl font-bold text-on-surface tracking-tight mt-1" id="custKpiMrr">—</span></div>
+</div>
+
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div><h3 class="text-base font-bold text-on-surface">All Customers</h3><p class="text-xs text-on-surface-variant">Search by company name or contact email.</p></div>
+<div class="relative min-w-[220px]">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-[18px] text-outline">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none focus:bg-surface-container transition-colors placeholder:text-outline" id="customerSearchInput" placeholder="Search customers..." type="text" oninput="CustomersPage.applyFilters()"/>
+</div>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead><tr class="bg-surface-container-low text-[11px] uppercase tracking-wider text-outline">
+<th class="py-3 px-4">Customer</th><th class="py-3 px-4">Contact Email</th><th class="py-3 px-4">Plan</th><th class="py-3 px-4">MRR</th><th class="py-3 px-4">Joined</th><th class="py-3 px-4">Status</th><th class="py-3 px-4 text-right">Actions</th>
+</tr></thead>
+<tbody class="divide-y divide-surface-container-low" id="customersTableBody">
+<tr><td colspan="7" class="py-10 text-center text-on-surface-variant"><span class="material-symbols-outlined spin inline-block align-middle mr-2">progress_activity</span>Loading customers…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ---------------- VIEW: BILLING & INVOICES ---------------- -->
+<div id="view-billing" class="view hidden">
+<div class="flex flex-col w-full gap-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-2xl font-bold text-on-surface tracking-tight">Billing &amp; Invoices</h1>
+<p class="text-on-surface-variant max-w-2xl">Revenue collected, outstanding balances, and every invoice issued to date.</p>
+</div>
+<button class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container transition-all shadow-sm" onclick="BillingPage.openCreateModal()"><span class="material-symbols-outlined text-[18px]">add</span><span>Create Invoice</span></button>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Collected (Paid)</span><span class="text-2xl font-bold text-on-surface tracking-tight mt-1" id="billKpiPaid">—</span></div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Pending</span><span class="text-2xl font-bold text-on-surface tracking-tight mt-1" id="billKpiPending">—</span></div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Overdue</span><span class="text-2xl font-bold text-error tracking-tight mt-1" id="billKpiOverdue">—</span></div>
+<div class="p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col justify-between"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Total Invoices</span><span class="text-2xl font-bold text-on-surface tracking-tight mt-1" id="billKpiCount">—</span></div>
+</div>
+
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div><h3 class="text-base font-bold text-on-surface">All Invoices</h3><p class="text-xs text-on-surface-variant">Filter by billing status.</p></div>
+<select class="px-3 py-1.5 bg-surface-container-low rounded-xl text-[13px] font-medium text-on-surface focus:outline-none cursor-pointer" id="invoiceStatusFilter" onchange="BillingPage.applyFilters()">
+<option value="">All Statuses</option><option value="paid">Paid</option><option value="pending">Pending</option><option value="overdue">Overdue</option>
+</select>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead><tr class="bg-surface-container-low text-[11px] uppercase tracking-wider text-outline">
+<th class="py-3 px-4">Invoice</th><th class="py-3 px-4">Customer</th><th class="py-3 px-4">Amount</th><th class="py-3 px-4">Issued</th><th class="py-3 px-4">Status</th><th class="py-3 px-4 text-right">Actions</th>
+</tr></thead>
+<tbody class="divide-y divide-surface-container-low" id="invoicesTableBody">
+<tr><td colspan="6" class="py-10 text-center text-on-surface-variant"><span class="material-symbols-outlined spin inline-block align-middle mr-2">progress_activity</span>Loading invoices…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ---------------- VIEW: SETTINGS & TEAM ---------------- -->
+<div id="view-settings" class="view hidden">
+<div class="flex flex-col w-full gap-6">
+<div class="flex flex-col gap-1">
+<h1 class="text-2xl font-bold text-on-surface tracking-tight">Settings &amp; Team</h1>
+<p class="text-on-surface-variant max-w-2xl">Workspace preferences and who has access to this account.</p>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+<div class="xl:col-span-5 p-6 bg-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-4">
+<h3 class="text-base font-bold text-on-surface">Workspace Settings</h3>
+<form class="flex flex-col gap-4" onsubmit="return SettingsPage.saveWorkspace(event)">
+<div><label class="text-[11px] font-semibold uppercase tracking-wider text-outline block mb-1">Workspace Name</label><input class="w-full px-3 py-2 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none focus:bg-surface-container" id="workspaceName" type="text"/></div>
+<div><label class="text-[11px] font-semibold uppercase tracking-wider text-outline block mb-1">Timezone</label>
+<select class="w-full px-3 py-2 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none cursor-pointer" id="workspaceTimezone">
+<option>UTC (Coordinated Universal Time)</option><option>PKT (Pakistan Standard Time)</option><option>EST (US Eastern)</option><option>CET (Central European Time)</option>
+</select></div>
+<div><label class="text-[11px] font-semibold uppercase tracking-wider text-outline block mb-1">Default Currency</label>
+<select class="w-full px-3 py-2 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none cursor-pointer" id="workspaceCurrency">
+<option>USD — US Dollar</option><option>EUR — Euro</option><option>GBP — British Pound</option><option>PKR — Pakistani Rupee</option>
+</select></div>
+<button class="self-start px-4 py-2 rounded-xl bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container transition-colors shadow-sm" type="submit" id="saveWorkspaceBtn">Save Changes</button>
+</form>
+</div>
+
+<div class="xl:col-span-7 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<div class="p-6 flex items-center justify-between">
+<div><h3 class="text-base font-bold text-on-surface">Team Members</h3><p class="text-xs text-on-surface-variant">Everyone with access to this workspace.</p></div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-[13px] font-semibold text-on-surface transition-colors" onclick="SettingsPage.openInviteModal()"><span class="material-symbols-outlined text-[18px]">person_add</span><span>Invite</span></button>
+</div>
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead><tr class="bg-surface-container-low text-[11px] uppercase tracking-wider text-outline">
+<th class="py-3 px-4">Name</th><th class="py-3 px-4">Email</th><th class="py-3 px-4">Role</th><th class="py-3 px-4">Status</th><th class="py-3 px-4 text-right">Actions</th>
+</tr></thead>
+<tbody class="divide-y divide-surface-container-low" id="teamTableBody">
+<tr><td colspan="5" class="py-10 text-center text-on-surface-variant"><span class="material-symbols-outlined spin inline-block align-middle mr-2">progress_activity</span>Loading team…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</main>
+</div>
+</div>
+
+<!-- Create API Key modal -->
+<div class="app-modal fixed inset-0 z-50 flex items-center justify-center p-4 hidden bg-inverse-surface/40 backdrop-blur-sm opacity-0 pointer-events-none" id="apiKeyModal" role="dialog" aria-modal="true" aria-labelledby="apiKeyModalTitle" aria-hidden="true">
+<div class="bg-surface-container-lowest w-full max-w-xl rounded-xl shadow-2xl p-6 flex flex-col gap-4 relative" data-modal-panel>
+<div class="flex items-center justify-between pb-1">
+<div><h3 class="text-lg font-bold text-on-surface" id="apiKeyModalTitle">Generate API Key &amp; Webhook</h3><p class="text-xs text-on-surface-variant mt-0.5">Provision an authenticated token with granular rate limits &amp; scopes.</p></div>
+<button class="p-1 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface" onclick="closeModalById('apiKeyModal')" aria-label="Close"><span class="material-symbols-outlined text-[20px]">close</span></button>
+</div>
+<form id="createKeyForm" class="flex flex-col gap-4" onsubmit="return DashboardPage.submitCreateKey(event)">
+<div><label class="text-[11px] font-semibold uppercase tracking-wider text-outline block mb-1" for="newKeyName">Key Label &amp; Environment</label><input class="w-full px-3 py-2 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none focus:bg-surface-container" id="newKeyName" type="text" value="Production Gateway Core v3" required/></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div><label class="text-[11px] font-semibold uppercase tracking-wider text-outline block mb-1">Access Scope Tier</label><select class="w-full px-3 py-2 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none cursor-pointer" id="newKeyEnv"><option>Full Read/Write (Admin)</option><option>Billing &amp; Invoices Only</option><option>Metrics &amp; Telemetry Stream</option><option>Read Only (Observer)</option></select></div>
+<div><label class="text-[11px] font-semibold uppercase tracking-wider text-outline block mb-1">Assigned Region</label><select class="w-full px-3 py-2 bg-surface-container-low rounded-xl text-sm text-on-surface focus:outline-none cursor-pointer" id="newKeyOrigin"><option value="Global Anycast">Global Anycast (Recommended)</option><option value="US-East (Virginia)">US-East (Virginia)</option><option value="EU-West (Frankfurt)">EU-West (Frankfurt)</option></select></div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-1"><label class="text-[11px] font-semibold uppercase tracking-wider text-outline">Ingress Rate Limit Throttling</label><span class="text-xs font-bold text-secondary" id="sliderValue">2,500 req/sec</span></div>
+<input class="w-full accent-secondary-container cursor-pointer" max="10000" min="500" oninput="document.getElementById('sliderValue').textContent = Number(this.value).toLocaleString() + ' req/sec'" step="500" type="range" value="2500" id="newKeyRate"/>
+<div class="flex justify-between text-[10px] text-outline mt-1"><span>500 req/sec</span><span>10,000 req/sec</span></div>
+</div>
+<div class="flex items-center justify-end gap-2 pt-2">
+<button class="px-4 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-[13px] font-semibold text-on-surface transition-colors" onclick="closeModalById('apiKeyModal')" type="button">Cancel</button>
+<button class="px-4 py-2 rounded-xl bg-secondary-container hover:opacity-95 text-on-secondary text-[13px] font-semibold shadow-sm transition-opacity flex items-center gap-2" type="submit" id="generateKeyBtn"><span>Generate &amp; Activate Token</span></button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Notifications drawer -->
+<div class="fixed right-6 top-20 w-80 sm:w-96 bg-surface-container-lowest rounded-xl shadow-2xl p-4 z-40 hidden flex-col gap-2" id="notificationDrawer" role="dialog" aria-label="Notifications">
+<div class="flex items-center justify-between pb-2"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-secondary text-[18px]">notifications_active</span><span class="text-base font-bold text-on-surface">3 Live Operational Alerts</span></div><button class="p-1 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface" onclick="Nav.toggleNotifications()" aria-label="Close notifications"><span class="material-symbols-outlined text-[16px]">close</span></button></div>
+<div class="flex flex-col gap-2">
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1"><div class="flex items-center justify-between"><span class="inline-flex items-center gap-1 text-xs font-semibold text-[#991b1b]"><span class="w-1.5 h-1.5 rounded-full bg-[#ef4444]"></span><span>High Latency Spike</span></span><span class="text-[10px] text-outline">12m ago</span></div><p class="text-xs text-on-surface">EU-Central node exceeded 110ms benchmark due to fiber re-routing.</p></div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1"><div class="flex items-center justify-between"><span class="inline-flex items-center gap-1 text-xs font-semibold text-[#065f46]"><span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span><span>Invoice Settled</span></span><span class="text-[10px] text-outline">44m ago</span></div><p class="text-xs text-on-surface">Invoice #1084 ($12,400.00 USD) cleared via Stripe Enterprise Wire.</p></div>
+<div class="p-3 rounded-xl bg-surface-container-low flex flex-col gap-1"><div class="flex items-center justify-between"><span class="inline-flex items-center gap-1 text-xs font-semibold text-secondary"><span class="material-symbols-outlined text-[13px]">person_add</span><span>Team Update</span></span><span class="text-[10px] text-outline">2h ago</span></div><p class="text-xs text-on-surface">Marcus Vance accepted invite with 'DevOps Principal' role.</p></div>
+</div>
+<button class="w-full py-2 mt-1 rounded-lg bg-surface-container-low hover:bg-surface-container text-xs font-semibold text-on-surface transition-colors text-center" onclick="showToast('All notifications marked as read', 'success'); Nav.toggleNotifications();">Mark All as Read</button>
+</div>
+
+<!-- SLIDE-OVER DRAWER -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 transition-opacity opacity-0 pointer-events-none duration-300" id="detailDrawerBackdrop" data-drawer-backdrop>
+<div class="absolute top-0 right-0 bottom-0 w-full max-w-xl bg-surface-container-lowest shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-out overflow-hidden" id="detailDrawer" data-drawer-panel role="dialog" aria-label="Client inspector">
+<div class="p-6 bg-surface-container-low flex items-center justify-between flex-shrink-0">
+<div class="flex items-center gap-2"><div class="w-10 h-10 rounded-xl bg-secondary text-on-secondary flex items-center justify-center font-bold"><span class="material-symbols-outlined">dataset</span></div><div><h2 class="text-lg font-bold text-on-surface" id="drawerClientTitle">Apex Global Services</h2><p class="text-xs text-secondary font-medium" id="drawerClientKey">org_apx_9941a80</p></div></div>
+<button aria-label="Close Inspector" class="p-2 rounded-xl text-outline hover:bg-surface-container hover:text-on-surface transition-colors" onclick="IntegrationsPage.closeDrawer()"><span class="material-symbols-outlined text-[20px]">close</span></button>
+</div>
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+<div class="bg-surface-container-low p-4 rounded-xl">
+<div class="flex items-center justify-between mb-2"><span class="text-[11px] font-semibold uppercase tracking-wider text-outline">Throughput Velocity (Last 60m)</span><span class="text-xs text-tertiary-container font-semibold">● 4,921 req/s avg</span></div>
+<svg class="w-full h-20 stroke-secondary fill-none" viewBox="0 0 400 90"><path d="M 0 70 Q 30 65, 60 40 T 120 45 T 180 20 T 240 55 T 300 15 T 360 30 T 400 25" stroke-linecap="round" stroke-width="2.5"/></svg>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between"><span class="text-[11px] font-semibold text-outline uppercase tracking-wider">Recent Request Payload</span><span class="text-xs px-2 py-0.5 rounded bg-surface-container text-on-surface">POST /v2/telemetry/dispatch</span></div>
+<div class="bg-primary-container text-surface-bright p-4 rounded-xl font-mono text-xs overflow-x-auto shadow-inner leading-relaxed"><pre>{
+  "client_id": "org_apx_9941a80",
+  "event_type": "subscription.reconciled",
+  "latency_ms": 14.8,
+  "status_code": 200
+}</pre></div>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-[11px] font-semibold text-outline uppercase tracking-wider">Assigned Scopes &amp; Capabilities</span>
+<div class="grid grid-cols-2 gap-1 text-sm">
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span><span>read:analytics_timeseries</span></div>
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span><span>write:events_v2</span></div>
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-secondary text-[18px]">check_circle</span><span>admin:webhooks_dispatch</span></div>
+<div class="flex items-center gap-1.5 p-2 rounded bg-surface-container-low text-outline"><span class="material-symbols-outlined text-[18px]">block</span><span>billing:pci_tokens</span></div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low flex items-center justify-between gap-4 border-t border-surface-container flex-shrink-0">
+<button class="px-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface text-[13px] font-medium hover:bg-surface-container shadow-sm transition-colors" onclick="IntegrationsPage.closeDrawer()">Close Panel</button>
+<button class="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-error text-on-error text-[13px] font-semibold hover:opacity-90 transition-colors shadow-sm" onclick="IntegrationsPage.confirmRevocation()"><span class="material-symbols-outlined text-[18px]">key_off</span><span>Revoke Credentials</span></button>
+</div>
+</div>
+</div>
+
+<!-- CREATE INTEGRATION MODAL -->
+<div class="app-modal fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity opacity-0 pointer-events-none hidden" id="createIntegrationModal" role="dialog" aria-modal="true" aria-labelledby="createIntegrationTitle" aria-hidden="true">
+<div class="bg-surface-container-lowest rounded-xl max-w-lg w-full p-6 shadow-2xl flex flex-col gap-4" data-modal-panel>
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-on-surface" id="createIntegrationTitle">Provision New Integration Key</h3>
+<button class="p-1 rounded-lg text-outline hover:bg-surface-container hover:text-on-surface" onclick="IntegrationsPage.closeCreateModal()" aria-label="Close"><span class="material-symbols-outlined text-[20px]">close</span></button>
+</div>
+<p class="text-on-surface-variant -mt-2" id="createIntegrationSubtitle">Creates a high-performance cryptographic API token bound to strict network boundaries and CIDR rules.</p>
+<form class="flex flex-col gap-4" id="createIntegrationForm" onsubmit="return IntegrationsPage.submitCreateIntegration(event)">
+<div class="flex flex-col gap-1" id="clientNameField">
+<label class="text-[13px] font-semibold text-on-surface">Client Account Name</label>
+<input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="integrationName" placeholder="e.g. Acme Micro-Billing Service" type="text"/>
+</div>
+<div class="flex flex-col gap-1 hidden" id="webhookUrlField">
+<label class="text-[13px] font-semibold text-on-surface">Webhook Endpoint URL</label>
+<input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="integrationWebhookUrl" placeholder="https://api.yourapp.com/webhooks/synthetix" type="url"/>
+</div>
+<div class="grid grid-cols-2 gap-2" id="clientExtraFields">
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Environment</label><select class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" id="integrationEnv"><option>Production</option><option>Staging / Preview</option><option>Development</option></select></div>
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Rate Limit (req/sec)</label><input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest" type="number" value="2500" id="integrationRate"/></div>
+</div>
+<div class="flex flex-col gap-1" id="originField">
+<label class="text-[13px] font-semibold text-on-surface">Allowed Origin IP or Domain CIDR</label>
+<input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="integrationOrigin" placeholder="e.g. 54.210.0.0/16 or api.partner.io" type="text"/>
+</div>
+<div class="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-surface-container-low">
+<button class="px-4 py-2 rounded-lg text-on-surface-variant text-[13px] font-medium hover:bg-surface-container transition-colors" onclick="IntegrationsPage.closeCreateModal()" type="button">Cancel</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container shadow-sm transition-all" type="submit" id="createIntegrationSubmitBtn">Generate Token &amp; Secret</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- ADD CUSTOMER MODAL -->
+<div class="app-modal fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity opacity-0 pointer-events-none hidden" id="createCustomerModal" role="dialog" aria-modal="true" aria-labelledby="createCustomerTitle" aria-hidden="true">
+<div class="bg-surface-container-lowest rounded-xl max-w-md w-full p-6 shadow-2xl flex flex-col gap-4" data-modal-panel>
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-on-surface" id="createCustomerTitle">Add Customer</h3>
+<button class="p-1 rounded-lg text-outline hover:bg-surface-container hover:text-on-surface" onclick="closeModalById('createCustomerModal')" aria-label="Close"><span class="material-symbols-outlined text-[20px]">close</span></button>
+</div>
+<form class="flex flex-col gap-4" onsubmit="return CustomersPage.submitCreate(event)">
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Company Name</label><input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="customerName" placeholder="e.g. Blue Harbor Logistics" type="text"/></div>
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Contact Email</label><input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="customerEmail" placeholder="name@company.com" type="email"/></div>
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Plan</label><select class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none" id="customerPlan"><option>Starter</option><option>Growth</option><option>Enterprise</option></select></div>
+<div class="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-surface-container-low">
+<button class="px-4 py-2 rounded-lg text-on-surface-variant text-[13px] font-medium hover:bg-surface-container transition-colors" onclick="closeModalById('createCustomerModal')" type="button">Cancel</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container shadow-sm transition-all" type="submit" id="createCustomerSubmitBtn">Add Customer</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- CREATE INVOICE MODAL -->
+<div class="app-modal fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity opacity-0 pointer-events-none hidden" id="createInvoiceModal" role="dialog" aria-modal="true" aria-labelledby="createInvoiceTitle" aria-hidden="true">
+<div class="bg-surface-container-lowest rounded-xl max-w-md w-full p-6 shadow-2xl flex flex-col gap-4" data-modal-panel>
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-on-surface" id="createInvoiceTitle">Create Invoice</h3>
+<button class="p-1 rounded-lg text-outline hover:bg-surface-container hover:text-on-surface" onclick="closeModalById('createInvoiceModal')" aria-label="Close"><span class="material-symbols-outlined text-[20px]">close</span></button>
+</div>
+<form class="flex flex-col gap-4" onsubmit="return BillingPage.submitCreate(event)">
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Customer</label><input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="invoiceCustomer" placeholder="e.g. Apex Global Services" type="text"/></div>
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Amount (USD)</label><input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="invoiceAmount" placeholder="e.g. 1200" type="number" min="1"/></div>
+<div class="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-surface-container-low">
+<button class="px-4 py-2 rounded-lg text-on-surface-variant text-[13px] font-medium hover:bg-surface-container transition-colors" onclick="closeModalById('createInvoiceModal')" type="button">Cancel</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container shadow-sm transition-all" type="submit" id="createInvoiceSubmitBtn">Create Invoice</button>
+</div>
+</form>
+</div>
+</div>
+
+<!-- INVITE TEAM MEMBER MODAL -->
+<div class="app-modal fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity opacity-0 pointer-events-none hidden" id="inviteTeamModal" role="dialog" aria-modal="true" aria-labelledby="inviteTeamTitle" aria-hidden="true">
+<div class="bg-surface-container-lowest rounded-xl max-w-md w-full p-6 shadow-2xl flex flex-col gap-4" data-modal-panel>
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-on-surface" id="inviteTeamTitle">Invite Team Member</h3>
+<button class="p-1 rounded-lg text-outline hover:bg-surface-container hover:text-on-surface" onclick="closeModalById('inviteTeamModal')" aria-label="Close"><span class="material-symbols-outlined text-[20px]">close</span></button>
+</div>
+<form class="flex flex-col gap-4" onsubmit="return SettingsPage.submitInvite(event)">
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Full Name</label><input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="inviteName" placeholder="e.g. Jane Cooper" type="text"/></div>
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Email</label><input class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest ring-1 ring-outline-variant/30" id="inviteEmail" placeholder="name@company.com" type="email"/></div>
+<div class="flex flex-col gap-1"><label class="text-[13px] font-semibold text-on-surface">Role</label><select class="w-full bg-surface-container-low px-3 py-2 rounded-lg text-sm text-on-surface focus:outline-none" id="inviteRole"><option>Support Engineer</option><option>Billing Admin</option><option>DevOps Principal</option><option>Read Only</option></select></div>
+<div class="flex items-center justify-end gap-2 mt-2 pt-2 border-t border-surface-container-low">
+<button class="px-4 py-2 rounded-lg text-on-surface-variant text-[13px] font-medium hover:bg-surface-container transition-colors" onclick="closeModalById('inviteTeamModal')" type="button">Cancel</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container shadow-sm transition-all" type="submit" id="inviteTeamSubmitBtn">Send Invite</button>
+</div>
+</form>
+</div>
+</div>
+
+<script>
+/* ============ ui-helpers.js ============ */
+/**
+ * ui-helpers.js
+ * Shared, reusable UI primitives used across every page of the Synthetix
+ * frontend: toast notifications, modal open/close with focus-trap,
+ * slide-over drawers, and small DOM utilities.
+ *
+ * Kept framework-free on purpose — the whole project is delivered as
+ * static HTML/CSS/JS (Tailwind via CDN) so it can be opened directly in
+ * a browser with zero build step, and dropped into any backend later.
+ */
+
+/* ---------------------------------------------------------------------
+ * Toast notifications
+ * ------------------------------------------------------------------- */
+function ensureToastRoot() {
+  let toast = document.getElementById('toastNotification');
+  if (toast) return toast;
+
+  toast = document.createElement('div');
+  toast.id = 'toastNotification';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
+  toast.className =
+    'fixed bottom-6 right-6 z-50 bg-primary-container text-on-primary px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none';
+  toast.innerHTML =
+    '<span class="material-symbols-outlined text-secondary-fixed-dim text-[18px]" id="toastIcon">info</span>' +
+    '<span class="font-body-sm text-body-sm font-medium" id="toastMessage">Action completed successfully.</span>';
+  document.body.appendChild(toast);
+  return toast;
+}
+
+let toastTimer = null;
+
+/**
+ * Show a toast message.
+ * @param {string} message
+ * @param {'info'|'success'|'error'} type
+ */
+function showToast(message, type) {
+  type = type || 'info';
+  const toast = ensureToastRoot();
+  const icon = document.getElementById('toastIcon');
+  const label = document.getElementById('toastMessage');
+
+  const icons = { info: 'info', success: 'check_circle', error: 'error' };
+  const iconColor =
+    type === 'success'
+      ? 'text-tertiary-fixed-dim'
+      : type === 'error'
+      ? 'text-[#ff8a80]'
+      : 'text-secondary-fixed-dim';
+
+  icon.textContent = icons[type] || icons.info;
+  icon.className = 'material-symbols-outlined text-[18px] ' + iconColor;
+  label.textContent = message;
+
+  toast.classList.remove('translate-y-20', 'opacity-0');
+  toast.classList.add('translate-y-0', 'opacity-100');
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.add('translate-y-20', 'opacity-0');
+    toast.classList.remove('translate-y-0', 'opacity-100');
+  }, 3200);
+}
+
+/* ---------------------------------------------------------------------
+ * Focus trap (shared by modals + drawers)
+ * ------------------------------------------------------------------- */
+function trapFocus(container) {
+  const focusableSelector =
+    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+  const focusable = Array.from(container.querySelectorAll(focusableSelector));
+  if (focusable.length === 0) return () => {};
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  first.focus();
+
+  function handler(e) {
+    if (e.key !== 'Tab') return;
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+  container.addEventListener('keydown', handler);
+  return () => container.removeEventListener('keydown', handler);
+}
+
+/* ---------------------------------------------------------------------
+ * Generic modal open/close (works with any element using the
+ * .app-modal / .app-modal-backdrop convention)
+ * ------------------------------------------------------------------- */
+let releaseModalFocus = null;
+let lastFocusedBeforeModal = null;
+
+function openModalById(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  lastFocusedBeforeModal = document.activeElement;
+  modal.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+  modal.classList.add('opacity-100');
+  modal.setAttribute('aria-hidden', 'false');
+  const panel = modal.querySelector('[data-modal-panel]') || modal;
+  releaseModalFocus = trapFocus(panel);
+}
+
+function closeModalById(id) {
+  const modal = document.getElementById(id);
+  if (!modal) return;
+  modal.classList.remove('opacity-100');
+  modal.classList.add('opacity-0', 'pointer-events-none');
+  modal.setAttribute('aria-hidden', 'true');
+  if (releaseModalFocus) releaseModalFocus();
+  if (lastFocusedBeforeModal) lastFocusedBeforeModal.focus();
+}
+
+/* ---------------------------------------------------------------------
+ * Drawer (slide-over) open/close
+ * ------------------------------------------------------------------- */
+function openDrawerById(backdropId, panelId) {
+  const backdrop = document.getElementById(backdropId);
+  const panel = document.getElementById(panelId);
+  if (!backdrop || !panel) return;
+  backdrop.classList.remove('opacity-0', 'pointer-events-none');
+  backdrop.classList.add('opacity-100');
+  panel.classList.remove('translate-x-full');
+  panel.classList.add('translate-x-0');
+  releaseModalFocus = trapFocus(panel);
+}
+
+function closeDrawerById(backdropId, panelId) {
+  const backdrop = document.getElementById(backdropId);
+  const panel = document.getElementById(panelId);
+  if (!backdrop || !panel) return;
+  backdrop.classList.remove('opacity-100');
+  backdrop.classList.add('opacity-0', 'pointer-events-none');
+  panel.classList.remove('translate-x-0');
+  panel.classList.add('translate-x-full');
+  if (releaseModalFocus) releaseModalFocus();
+}
+
+/* ---------------------------------------------------------------------
+ * Small utilities
+ * ------------------------------------------------------------------- */
+function debounce(fn, wait) {
+  let t;
+  return function (...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), wait);
+  };
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function timeAgo() {
+  return 'Just now';
+}
+
+// Global Escape key: close any open modal/drawer
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.app-modal.opacity-100').forEach((m) => closeModalById(m.id));
+  document.querySelectorAll('[data-drawer-panel].translate-x-0').forEach((p) => {
+    const backdrop = p.closest('[data-drawer-backdrop]');
+    if (backdrop) closeDrawerById(backdrop.id, p.id);
+  });
+});
+
+
+/* ============ mock-api.js ============ */
+/**
+ * mock-api.js
+ * A tiny, promise-based mock backend. Every function below returns a
+ * Promise that resolves/rejects after a realistic delay, exactly like a
+ * real fetch() to a REST API would. This is the ONLY file you need to
+ * replace to wire this frontend up to a real backend later — every UI
+ * module calls through this layer instead of touching data directly.
+ */
+
+const MockAPI = (() => {
+  // --- seed data -------------------------------------------------------
+  let clients = [
+    { id: 'org_apx_9941a80', name: 'Apex Global Services', initials: 'AX', key: 'sk_live_8849••••••41f', env: 'PROD', origin: 'api.apextech.com', rate: '5,000', lastSync: '2 mins ago', active: true, revoked: false },
+    { id: 'org_bio_4482k11', name: 'BioLogic Synthetics', initials: 'BL', key: 'sk_live_1932••••••08a', env: 'STAGING', origin: '*.biologic-staging.internal', rate: '1,000', lastSync: '45 mins ago', active: true, revoked: false },
+    { id: 'org_nov_8832x09', name: 'Nova Vault Holdings', initials: 'NV', key: 'sk_live_7710••••••99e', env: 'PROD', origin: 'fin.novavault.io', rate: '0', lastSync: '4 days ago', active: false, revoked: true },
+    { id: 'org_crs_1994d21', name: 'Crestline Analytics', initials: 'CR', key: 'sk_live_5531••••••22k', env: 'PROD', origin: 'analytics-prod.crestline.co', rate: '12,500', lastSync: 'Just now', active: true, revoked: false },
+  ];
+
+  let auditLogs = [
+    { type: 'REVOKE', message: 'Secret sk_live_7710•••• was revoked by sarah.jenkins@synthetix.io', ts: '2026-09-14T10:42:19Z' },
+    { type: 'ROTATE', message: 'Zero-downtime rotation generated key pair sk_live_8849•••• for Apex Global', ts: '2026-09-14T09:15:02Z' },
+    { type: 'WARN', message: 'Webhook HTTP 502 returned from endpoint /v1/webhooks/billing', ts: '2026-09-14T08:58:33Z' },
+  ];
+
+  let webhooks = []; // starts empty on purpose -> exercises the empty state
+
+  let telemetryFailCount = 0; // used to simulate an initial failure, then success on retry
+
+  let customers = [
+    { id: 'cus_4471a', name: 'Apex Global Services', email: 'billing@apextech.com', plan: 'Enterprise', mrr: 4200, joined: '2025-02-14', status: 'active' },
+    { id: 'cus_9932b', name: 'BioLogic Synthetics', email: 'ops@biologicsyn.com', plan: 'Growth', mrr: 890, joined: '2025-06-01', status: 'active' },
+    { id: 'cus_1120c', name: 'Nova Vault Holdings', email: 'finance@novavault.io', plan: 'Enterprise', mrr: 0, joined: '2024-11-20', status: 'churned' },
+    { id: 'cus_7743d', name: 'Crestline Analytics', email: 'accounts@crestline.co', plan: 'Enterprise', mrr: 6100, joined: '2025-01-09', status: 'active' },
+    { id: 'cus_5502e', name: 'Quantix Ledger', email: 'hello@quantixledger.com', plan: 'Starter', mrr: 120, joined: '2026-03-02', status: 'trialing' },
+  ];
+
+  let invoices = [
+    { id: 'INV-1084', customer: 'Apex Global Services', amount: 4200, status: 'paid', issued: '2026-09-01' },
+    { id: 'INV-1085', customer: 'Crestline Analytics', amount: 6100, status: 'paid', issued: '2026-09-01' },
+    { id: 'INV-1086', customer: 'BioLogic Synthetics', amount: 890, status: 'pending', issued: '2026-09-10' },
+    { id: 'INV-1087', customer: 'Nova Vault Holdings', amount: 1450, status: 'overdue', issued: '2026-08-12' },
+    { id: 'INV-1088', customer: 'Quantix Ledger', amount: 120, status: 'pending', issued: '2026-09-14' },
+  ];
+
+  let teamMembers = [
+    { id: 'usr_001', name: 'Sarah Jenkins', email: 'sarah.jenkins@synthetix.io', role: 'Owner', status: 'active' },
+    { id: 'usr_002', name: 'Marcus Vance', email: 'marcus.vance@synthetix.io', role: 'DevOps Principal', status: 'active' },
+    { id: 'usr_003', name: 'Priya Anand', email: 'priya.anand@synthetix.io', role: 'Billing Admin', status: 'active' },
+    { id: 'usr_004', name: 'Tomasz Bielik', email: 'tomasz.bielik@synthetix.io', role: 'Support Engineer', status: 'invited' },
+  ];
+
+  let workspaceSettings = { name: 'Acme Corp', timezone: 'UTC (Coordinated Universal Time)', currency: 'USD — US Dollar' };
+
+  // --- helpers -----------------------------------------------------------
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  const uid = (prefix) => prefix + '_' + Math.random().toString(36).slice(2, 10);
+
+  // --- public API ----------------------------------------------------------
+  return {
+    /** Simulated login. Any well-formed email + non-empty password succeeds. */
+    async login(email, password) {
+      await delay(1100);
+      if (!email || !email.includes('@')) {
+        const err = new Error('Please enter a valid work email address.');
+        err.code = 'INVALID_EMAIL';
+        throw err;
+      }
+      if (!password || password.length < 4) {
+        const err = new Error('Incorrect email or password.');
+        err.code = 'INVALID_CREDENTIALS';
+        throw err;
+      }
+      return { token: uid('tok'), user: { email, name: email.split('@')[0] } };
+    },
+
+    async signup(name, email, password) {
+      await delay(1200);
+      if (!name || !email || !password) {
+        throw new Error('All fields are required to create a workspace.');
+      }
+      return { token: uid('tok'), user: { email, name } };
+    },
+
+    async fetchClients() {
+      await delay(700);
+      return clients.slice();
+    },
+
+    async createClient({ name, env, rateLimit, origin }) {
+      await delay(900);
+      if (!name || !name.trim()) {
+        throw new Error('Client account name is required.');
+      }
+      const initials = name
+        .trim()
+        .split(/\s+/)
+        .map((w) => w[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
+      const record = {
+        id: uid('org'),
+        name: name.trim(),
+        initials,
+        key: 'sk_live_' + Math.random().toString(16).slice(2, 6) + '••••••' + Math.random().toString(16).slice(2, 5),
+        env: (env || 'Production').toUpperCase().split(' ')[0],
+        origin: origin || 'unassigned.origin',
+        rate: String(rateLimit || 2500),
+        lastSync: 'Just now',
+        active: true,
+        revoked: false,
+      };
+      clients.unshift(record);
+      auditLogs.unshift({
+        type: 'ROTATE',
+        message: `New credential pair ${record.key} provisioned for ${record.name}`,
+        ts: new Date().toISOString(),
+      });
+      return record;
+    },
+
+    async revokeClient(id) {
+      await delay(600);
+      const c = clients.find((x) => x.id === id);
+      if (!c) throw new Error('Client not found.');
+      c.revoked = true;
+      c.active = false;
+      c.rate = '0';
+      auditLogs.unshift({
+        type: 'REVOKE',
+        message: `Secret ${c.key} was revoked by current session user`,
+        ts: new Date().toISOString(),
+      });
+      return c;
+    },
+
+    async fetchWebhooks() {
+      await delay(600);
+      return webhooks.slice(); // deliberately empty on first load
+    },
+
+    async createWebhook({ url }) {
+      await delay(800);
+      if (!url) throw new Error('Endpoint URL is required.');
+      const hook = { id: uid('whk'), url, status: 'Active', createdAt: 'Just now' };
+      webhooks.push(hook);
+      return hook;
+    },
+
+    /**
+     * Simulates a flaky telemetry endpoint: fails the first time it is
+     * called in a session (to demonstrate a real error state + retry
+     * flow), then succeeds on every call after that.
+     */
+    async fetchTelemetry() {
+      await delay(1400);
+      if (telemetryFailCount === 0) {
+        telemetryFailCount++;
+        const err = new Error('Telemetry gateway timed out (504). Please retry.');
+        err.code = 'GATEWAY_TIMEOUT';
+        throw err;
+      }
+      return {
+        throughput: '14.2k req/s',
+        successRate: '99.98%',
+        p99: '82ms',
+      };
+    },
+
+    async fetchAuditLogs() {
+      await delay(500);
+      return auditLogs.slice();
+    },
+
+    async exportReport() {
+      await delay(900);
+      const header = 'Client,Plan,Key,Quota,Status,LastSync\n';
+      const rows = clients
+        .map((c) =>
+          [c.name, c.env, c.key, c.rate, c.revoked ? 'Revoked' : c.active ? 'Active' : 'Inactive', c.lastSync].join(',')
+        )
+        .join('\n');
+      return header + rows;
+    },
+
+    async fetchCustomers() {
+      await delay(650);
+      return customers.slice();
+    },
+
+    async createCustomer({ name, email, plan }) {
+      await delay(800);
+      if (!name || !name.trim()) throw new Error('Customer name is required.');
+      if (!email || !email.includes('@')) throw new Error('A valid contact email is required.');
+      const record = {
+        id: uid('cus'),
+        name: name.trim(),
+        email: email.trim(),
+        plan: plan || 'Starter',
+        mrr: plan === 'Enterprise' ? 3000 : plan === 'Growth' ? 800 : 0,
+        joined: new Date().toISOString().slice(0, 10),
+        status: 'trialing',
+      };
+      customers.unshift(record);
+      return record;
+    },
+
+    async fetchInvoices() {
+      await delay(600);
+      return invoices.slice();
+    },
+
+    async createInvoice({ customer, amount }) {
+      await delay(800);
+      if (!customer) throw new Error('Select a customer for this invoice.');
+      if (!amount || Number(amount) <= 0) throw new Error('Enter a valid invoice amount.');
+      const record = {
+        id: 'INV-' + Math.floor(1000 + Math.random() * 9000),
+        customer,
+        amount: Number(amount),
+        status: 'pending',
+        issued: new Date().toISOString().slice(0, 10),
+      };
+      invoices.unshift(record);
+      return record;
+    },
+
+    async markInvoicePaid(id) {
+      await delay(500);
+      const inv = invoices.find((i) => i.id === id);
+      if (!inv) throw new Error('Invoice not found.');
+      inv.status = 'paid';
+      return inv;
+    },
+
+    async fetchTeamMembers() {
+      await delay(550);
+      return teamMembers.slice();
+    },
+
+    async inviteTeamMember({ name, email, role }) {
+      await delay(750);
+      if (!name || !name.trim()) throw new Error('Team member name is required.');
+      if (!email || !email.includes('@')) throw new Error('A valid email is required.');
+      const record = { id: uid('usr'), name: name.trim(), email: email.trim(), role: role || 'Support Engineer', status: 'invited' };
+      teamMembers.push(record);
+      return record;
+    },
+
+    async removeTeamMember(id) {
+      await delay(500);
+      teamMembers = teamMembers.filter((m) => m.id !== id);
+      return true;
+    },
+
+    async fetchWorkspaceSettings() {
+      await delay(400);
+      return { ...workspaceSettings };
+    },
+
+    async saveWorkspaceSettings(next) {
+      await delay(700);
+      if (!next.name || !next.name.trim()) throw new Error('Workspace name is required.');
+      workspaceSettings = { ...workspaceSettings, ...next };
+      return { ...workspaceSettings };
+    },
+  };
+})();
+
+
+/* ============ nav.js (shared chrome) ============ */
+/**
+ * nav.js — shared chrome behaviour for every authenticated page
+ * (sidebar active-state, profile dropdown, logout, "not built yet" stub,
+ * live clock). Included by dashboard.html and integrations.html.
+ */
+const Nav = (() => {
+  function highlightActiveLink(currentPage) {
+    document.querySelectorAll('.nav-link').forEach((link) => {
+      const isActive = link.dataset.page === currentPage;
+      link.classList.toggle('bg-primary-container', isActive);
+      link.classList.toggle('text-on-primary', isActive);
+      link.classList.toggle('font-medium', isActive);
+      link.classList.toggle('shadow-[0_1px_3px_rgba(0,0,0,0.05)]', isActive);
+      link.classList.toggle('text-on-surface-variant', !isActive);
+      if (isActive) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  function toggleProfileMenu() {
+    const menu = document.getElementById('profileMenu');
+    const btn = document.getElementById('profileMenuBtn');
+    const willShow = menu.classList.contains('hidden');
+    menu.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(willShow));
+  }
+
+  function logout() {
+    showToast('Signing out…', 'info');
+    setTimeout(() => {
+      Router.show('auth');
+    }, 500);
+  }
+
+  function notReady(featureName) {
+    showToast(`${featureName} is a planned module — not part of this demo build.`, 'info');
+    return false;
+  }
+
+  function toggleNotifications() {
+    const drawer = document.getElementById('notificationDrawer');
+    const isHidden = drawer.classList.contains('hidden');
+    drawer.classList.toggle('hidden');
+    drawer.classList.toggle('flex', isHidden);
+  }
+
+  function startClock() {
+    const el = document.getElementById('liveClock');
+    if (!el) return;
+    function tick() {
+      const now = new Date();
+      el.textContent = 'LIVE ' + now.toISOString().slice(11, 19) + ' UTC';
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  // Close profile menu when clicking outside it
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('profileMenu');
+    const btn = document.getElementById('profileMenuBtn');
+    if (!menu || menu.classList.contains('hidden')) return;
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  return { highlightActiveLink, toggleProfileMenu, logout, notReady, startClock, toggleNotifications };
+})();
+
+
+
+/* ============ auth.js ============ */
+/**
+ * auth.js — controller for index.html (Sign In / Create Account)
+ */
+const AuthPage = (() => {
+  let mode = 'signin';
+
+  function switchTab(next) {
+    mode = next;
+    const tabSignIn = document.getElementById('tab-signin');
+    const tabSignUp = document.getElementById('tab-signup');
+    const submitLabel = document.getElementById('btn-submit-label');
+    const nameField = document.getElementById('nameField');
+    const dividerLabel = document.getElementById('dividerLabel');
+
+    const activeCls =
+      'flex-1 py-2 text-center rounded-lg text-sm font-medium transition-all shadow-sm bg-surface-container-lowest text-on-surface';
+    const inactiveCls =
+      'flex-1 py-2 text-center rounded-lg text-sm font-medium transition-all text-on-surface-variant hover:text-on-surface';
+
+    if (next === 'signin') {
+      tabSignIn.className = activeCls;
+      tabSignUp.className = inactiveCls;
+      tabSignIn.setAttribute('aria-pressed', 'true');
+      tabSignUp.setAttribute('aria-pressed', 'false');
+      submitLabel.textContent = 'Sign In to Workspace';
+      dividerLabel.textContent = 'or sign in with email';
+      nameField.classList.add('hidden');
+    } else {
+      tabSignUp.className = activeCls;
+      tabSignIn.className = inactiveCls;
+      tabSignUp.setAttribute('aria-pressed', 'true');
+      tabSignIn.setAttribute('aria-pressed', 'false');
+      submitLabel.textContent = 'Create Workspace Account';
+      dividerLabel.textContent = 'or sign up with email';
+      nameField.classList.remove('hidden');
+    }
+  }
+
+  function togglePasswordVisibility() {
+    const pwdInput = document.getElementById('password');
+    const pwdIcon = document.getElementById('pwd-icon');
+    const isHidden = pwdInput.type === 'password';
+    pwdInput.type = isHidden ? 'text' : 'password';
+    pwdIcon.textContent = isHidden ? 'visibility_off' : 'visibility';
+  }
+
+  function validateEmailInput(input) {
+    const icon = document.getElementById('email-valid-icon');
+    const badge = document.getElementById('email-badge');
+    const valid = /\S+@\S+\.\S+/.test(input.value);
+    icon.classList.toggle('hidden', !valid);
+    badge.classList.toggle('hidden', !valid);
+  }
+
+  function ssoClick(providerName) {
+    showToast(`Redirecting to ${providerName} for authentication…`, 'info');
+  }
+
+  function openForgotModal(e) {
+    e.preventDefault();
+    openModalById('forgotModal');
+  }
+
+  function submitForgot(e) {
+    e.preventDefault();
+    const email = document.getElementById('forgotEmail').value;
+    closeModalById('forgotModal');
+    showToast(`Password reset link sent to ${email}`, 'success');
+    return false;
+  }
+
+  function setFieldError(id, message) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = message || '';
+    el.classList.toggle('hidden', !message);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setFieldError('email-error', '');
+    setFieldError('password-error', '');
+
+    const email = document.getElementById('work-email').value.trim();
+    const password = document.getElementById('password').value;
+    const name = document.getElementById('full-name') ? document.getElementById('full-name').value.trim() : '';
+
+    const submitBtn = document.getElementById('submitBtn');
+    const label = document.getElementById('btn-submit-label');
+    const kbd = document.getElementById('enterKbd');
+    const originalLabel = label.textContent;
+
+    submitBtn.disabled = true;
+    kbd.classList.add('hidden');
+    label.innerHTML = '<span class="material-symbols-outlined text-[18px] spin inline-block align-middle mr-1">progress_activity</span>Authenticating…';
+
+    try {
+      const result =
+        mode === 'signin' ? await MockAPI.login(email, password) : await MockAPI.signup(name, email, password);
+
+      label.innerHTML = '<span class="material-symbols-outlined text-[18px] align-middle mr-1">check</span>Authorized';
+      submitBtn.classList.remove('bg-primary');
+      submitBtn.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
+
+      showToast(`Welcome${result.user.name ? ', ' + result.user.name : ''} — redirecting to your dashboard…`, 'success');
+
+      setTimeout(() => {
+        Router.show('dashboard');
+      }, 900);
+    } catch (err) {
+      submitBtn.disabled = false;
+      kbd.classList.remove('hidden');
+      label.textContent = originalLabel;
+
+      if (err.code === 'INVALID_EMAIL') {
+        setFieldError('email-error', err.message);
+      } else {
+        setFieldError('password-error', err.message);
+      }
+      showToast(err.message, 'error');
+    }
+  }
+
+  function init() {
+    document.getElementById('authForm').addEventListener('submit', handleSubmit);
+  }
+
+  return {
+    switchTab,
+    togglePasswordVisibility,
+    validateEmailInput,
+    ssoClick,
+    openForgotModal,
+    submitForgot,
+    init,
+  };
+})();
+
+
+
+/* ============ dashboard.js ============ */
+/**
+ * dashboard.js — controller for dashboard.html
+ */
+const DashboardPage = (() => {
+  let allClients = [];
+
+  const chartPaths = {
+    rev: 'M0,160 C80,140 160,155 240,110 C320,70 390,95 470,65 C550,35 630,50 710,25 C750,12 780,18 800,10 L800,240 L0,240 Z',
+    req: 'M0,190 C80,175 160,180 240,150 C320,120 390,140 470,100 C550,70 630,90 710,50 C750,35 780,45 800,30 L800,240 L0,240 Z',
+    err: 'M0,220 C80,225 160,222 240,224 C320,226 390,225 470,223 C550,221 630,224 710,222 C750,221 780,223 800,222 L800,240 L0,240 Z',
+  };
+
+  function switchChartTab(tab) {
+    ['rev', 'req', 'err'].forEach((t) => {
+      const btn = document.getElementById('tab-' + t);
+      btn.className =
+        t === tab
+          ? 'px-3 py-1 rounded-lg bg-surface-container-lowest shadow-sm text-xs font-semibold text-on-surface transition-all'
+          : 'px-3 py-1 rounded-lg text-on-surface-variant hover:text-on-surface text-xs font-semibold transition-all';
+    });
+    document.getElementById('chartPath').setAttribute('d', chartPaths[tab]);
+    const names = { rev: 'Monthly Recurring Revenue', req: 'API Request Throughput', err: 'HTTP Error Rate Index' };
+    showToast('Switched visual metric to: ' + names[tab], 'info');
+  }
+
+  function statusBadge(client) {
+    if (client.revoked) {
+      return '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-outline"></span><span>Revoked</span></span>';
+    }
+    if (client.active) {
+      return '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#ecfdf5] text-[#065f46] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span><span>Active</span></span>';
+    }
+    return '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#fffbeb] text-[#92400e] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span><span>Inactive</span></span>';
+  }
+
+  function rowHtml(c) {
+    return `
+    <tr class="hover:bg-surface-container-low/60 transition-colors row-adding" data-client-row="${c.id}">
+      <td class="py-3 px-4"><input class="rounded accent-secondary-container cursor-pointer" type="checkbox" aria-label="Select ${escapeHtml(c.name)}"/></td>
+      <td class="py-3 px-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center font-bold text-secondary text-xs">${c.initials}</div>
+          <div><span class="font-semibold text-on-surface block leading-tight">${escapeHtml(c.name)}</span><span class="text-[11px] text-on-surface-variant">${escapeHtml(c.id)}</span></div>
+        </div>
+      </td>
+      <td class="py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full ${c.env === 'PROD' || c.env === 'PRODUCTION' ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-surface-container text-on-surface'} text-[11px] font-semibold">${escapeHtml(c.env)}</span></td>
+      <td class="py-3 px-4">
+        <div class="flex items-center gap-1.5 font-mono text-xs text-on-surface-variant">
+          <span>${escapeHtml(c.key)}</span>
+          <button class="material-symbols-outlined text-[15px] text-outline hover:text-on-surface" title="Copy key" onclick="DashboardPage.copyKey('${escapeHtml(c.key)}')">content_copy</button>
+        </div>
+      </td>
+      <td class="py-3 px-4"><span class="font-semibold text-on-surface">${escapeHtml(c.rate)}</span> <span class="text-[11px] text-outline">req/sec</span></td>
+      <td class="py-3 px-4">${statusBadge(c)}</td>
+      <td class="py-3 px-4 text-xs text-on-surface-variant whitespace-nowrap">${escapeHtml(c.lastSync)}</td>
+      <td class="py-3 px-4 text-right">
+        <button class="p-1 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface" onclick="showToast('Opening config for ${escapeHtml(c.name)}', 'info')" aria-label="Manage ${escapeHtml(c.name)}"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+      </td>
+    </tr>`;
+  }
+
+  function renderRows(list) {
+    const body = document.getElementById('clientsTableBody');
+    if (list.length === 0) {
+      body.innerHTML =
+        '<tr><td colspan="8" class="py-10 text-center text-on-surface-variant">No client accounts match these filters.</td></tr>';
+    } else {
+      body.innerHTML = list.map(rowHtml).join('');
+    }
+    document.getElementById('rowsShowing').textContent = String(list.length);
+    document.getElementById('rowsTotal').textContent = String(allClients.length);
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('clientSearchInput').value.trim().toLowerCase();
+    const plan = document.getElementById('planFilter').value;
+    const status = document.getElementById('statusFilter').value;
+
+    const filtered = allClients.filter((c) => {
+      const matchesQuery =
+        !q || c.name.toLowerCase().includes(q) || c.key.toLowerCase().includes(q) || c.id.toLowerCase().includes(q);
+      const matchesPlan = !plan || c.env === plan;
+      const matchesStatus = !status || (status === 'active' ? c.active && !c.revoked : c.revoked);
+      return matchesQuery && matchesPlan && matchesStatus;
+    });
+    renderRows(filtered);
+  }
+
+  async function loadClients() {
+    try {
+      allClients = await MockAPI.fetchClients();
+      renderRows(allClients);
+    } catch (err) {
+      document.getElementById('clientsTableBody').innerHTML =
+        '<tr><td colspan="8" class="py-10 text-center text-error">Failed to load client accounts. <button class="underline font-semibold" onclick="DashboardPage.retryLoad()">Retry</button></td></tr>';
+    }
+  }
+
+  function retryLoad() {
+    document.getElementById('clientsTableBody').innerHTML =
+      '<tr><td colspan="8" class="py-10 text-center text-on-surface-variant"><span class="material-symbols-outlined spin inline-block align-middle mr-2">progress_activity</span>Loading client accounts…</td></tr>';
+    loadClients();
+  }
+
+  function copyKey(key) {
+    navigator.clipboard
+      .writeText(key)
+      .then(() => showToast('Copied key: ' + key, 'success'))
+      .catch(() => showToast('Copied key: ' + key, 'success'));
+  }
+
+  async function exportReport() {
+    const btn = document.getElementById('exportBtn');
+    const icon = document.getElementById('exportIcon');
+    icon.classList.add('spin');
+    btn.disabled = true;
+    try {
+      const csv = await MockAPI.exportReport();
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'synthetix-operations-report.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Report exported: synthetix-operations-report.csv', 'success');
+    } catch (err) {
+      showToast('Could not generate the report. Please try again.', 'error');
+    } finally {
+      icon.classList.remove('spin');
+      btn.disabled = false;
+    }
+  }
+
+  async function submitCreateKey(e) {
+    e.preventDefault();
+    const btn = document.getElementById('generateKeyBtn');
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[18px] spin">progress_activity</span><span>Provisioning…</span>';
+
+    try {
+      const name = document.getElementById('newKeyName').value;
+      const env = document.getElementById('newKeyEnv').value;
+      const origin = document.getElementById('newKeyOrigin').value;
+      const rateLimit = document.getElementById('newKeyRate').value;
+
+      const record = await MockAPI.createClient({ name, env, rateLimit, origin });
+      allClients.unshift(record);
+      applyFilters();
+      closeModalById('apiKeyModal');
+      showToast(`Key "${record.name}" successfully activated & registered.`, 'success');
+      document.getElementById('createKeyForm').reset();
+      document.getElementById('sliderValue').textContent = '2,500 req/sec';
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+    }
+    return false;
+  }
+
+  function init() {
+    Nav.highlightActiveLink('dashboard');
+    loadClients();
+  }
+
+  return {
+    switchChartTab,
+    applyFilters,
+    retryLoad,
+    copyKey,
+    exportReport,
+    submitCreateKey,
+    init,
+  };
+})();
+
+
+
+/* ============ integrations.js ============ */
+/**
+ * integrations.js — controller for integrations.html
+ */
+const IntegrationsPage = (() => {
+  let currentDrawerClientId = null;
+  let createMode = 'client'; // 'client' | 'webhook'
+  let clientsCache = [];
+
+  /* ---------------- Tabs ---------------- */
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-view').forEach((el) => {
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    });
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+      btn.classList.add('text-on-surface-variant', 'font-medium');
+    });
+
+    const map = {
+      'tab-clients': 'view-clients',
+      'tab-webhooks': 'view-webhooks',
+      'tab-telemetry': 'view-telemetry',
+      'tab-logs': 'view-logs',
+    };
+    const viewId = map[tabId];
+    const view = document.getElementById(viewId);
+    view.classList.remove('hidden');
+    view.classList.add('flex');
+
+    const activeBtn = document.getElementById('btn-' + tabId);
+    activeBtn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+    activeBtn.classList.remove('text-on-surface-variant', 'font-medium');
+
+    if (tabId === 'tab-webhooks') renderWebhooks();
+    if (tabId === 'tab-telemetry') loadTelemetry();
+    if (tabId === 'tab-logs') loadAuditLogs();
+  }
+
+  /* ---------------- Active Clients tab ---------------- */
+  function clientRowHtml(c) {
+    const disabledCls = c.revoked ? 'opacity-75' : '';
+    const keyHtml = c.revoked
+      ? `<span class="text-outline">sk_live_</span><span class="font-bold text-outline">${escapeHtml(c.key.replace('sk_live_', ''))}</span><span class="text-xs text-error ml-1 font-medium">(Revoked)</span>`
+      : `<span class="text-on-surface-variant">sk_live_</span><span class="font-bold text-on-surface">${escapeHtml(c.key.replace('sk_live_', ''))}</span><button class="material-symbols-outlined text-[14px] text-outline hover:text-on-surface ml-1" onclick="IntegrationsPage.copyKey('${escapeHtml(c.key)}')">content_copy</button>`;
+
+    return `
+    <tr class="hover:bg-surface-container-low/50 transition-colors group row-adding ${disabledCls}" data-int-row="${c.id}">
+      <td class="py-3.5 px-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-[13px] font-bold text-secondary">${c.initials}</div>
+          <div><button class="font-semibold text-on-surface hover:text-secondary text-left transition-colors" onclick="IntegrationsPage.openDrawer('${escapeHtml(c.name)}', '${c.id}')">${escapeHtml(c.name)}</button><p class="text-xs text-on-surface-variant">${escapeHtml(c.id)}</p></div>
+        </div>
+      </td>
+      <td class="py-3.5 px-4"><div class="flex items-center gap-1 font-mono text-xs bg-surface-container-low px-2 py-1 rounded inline-flex">${keyHtml}</div></td>
+      <td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded text-[11px] font-semibold ${c.env === 'PROD' || c.env === 'PRODUCTION' ? 'bg-secondary-fixed text-on-secondary-fixed' : 'bg-surface-container text-on-surface-variant'}">${escapeHtml(c.env)}</span></td>
+      <td class="py-3.5 px-4"><div class="flex flex-col"><span class="font-mono text-xs text-on-surface">${escapeHtml(c.origin)}</span></div></td>
+      <td class="py-3.5 px-4"><div class="flex items-center gap-1.5"><span class="font-mono text-xs font-semibold ${c.revoked ? 'text-outline' : 'text-on-surface'}">${escapeHtml(c.rate)}</span><span class="text-[11px] text-outline">req/sec</span></div></td>
+      <td class="py-3.5 px-4"><span class="text-[13px] ${c.revoked ? 'text-outline' : 'text-on-surface-variant'}">${escapeHtml(c.lastSync)}</span></td>
+      <td class="py-3.5 px-4 text-center">
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input ${c.active && !c.revoked ? 'checked' : ''} ${c.revoked ? 'disabled' : ''} class="sr-only peer" type="checkbox" onchange="showToast('${escapeHtml(c.name)} traffic ' + (this.checked ? 'enabled' : 'paused'), 'info')"/>
+          <div class="w-9 h-5 bg-surface-container peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-secondary"></div>
+        </label>
+      </td>
+      <td class="py-3.5 px-4 text-right">
+        <div class="flex items-center justify-end gap-1">
+          <button class="p-1.5 rounded-lg text-outline hover:bg-surface-container hover:text-on-surface transition-colors" onclick="IntegrationsPage.openDrawer('${escapeHtml(c.name)}', '${c.id}')" title="Manage Config"><span class="material-symbols-outlined text-[18px]">settings</span></button>
+          ${
+            c.revoked
+              ? `<button class="p-1.5 rounded-lg text-outline hover:bg-surface-container hover:text-error transition-colors" title="Delete Token" onclick="IntegrationsPage.deleteRow('${c.id}')"><span class="material-symbols-outlined text-[18px]">delete</span></button>`
+              : `<button class="p-1.5 rounded-lg text-outline hover:bg-surface-container hover:text-error transition-colors" title="Rotate Secret" onclick="showToast('New credential pair generated for ${escapeHtml(c.name)}', 'success')"><span class="material-symbols-outlined text-[18px]">refresh</span></button>`
+          }
+        </div>
+      </td>
+    </tr>`;
+  }
+
+  function renderClientsTable(list) {
+    const body = document.getElementById('integrationsTableBody');
+    body.innerHTML = list.length
+      ? list.map(clientRowHtml).join('')
+      : '<tr><td colspan="8" class="py-10 text-center text-on-surface-variant">No accounts match this search.</td></tr>';
+    document.getElementById('intRowsShowing').textContent = String(list.length);
+    document.getElementById('intRowsTotal').textContent = String(clientsCache.length);
+    document.getElementById('clientCountBadge').textContent = String(clientsCache.length);
+  }
+
+  function filterClients() {
+    const q = document.getElementById('clientSearch').value.trim().toLowerCase();
+    const filtered = !q
+      ? clientsCache
+      : clientsCache.filter(
+          (c) =>
+            c.name.toLowerCase().includes(q) ||
+            c.key.toLowerCase().includes(q) ||
+            c.origin.toLowerCase().includes(q) ||
+            c.id.toLowerCase().includes(q)
+        );
+    renderClientsTable(filtered);
+  }
+
+  async function loadClients() {
+    try {
+      clientsCache = await MockAPI.fetchClients();
+      renderClientsTable(clientsCache);
+    } catch (err) {
+      document.getElementById('integrationsTableBody').innerHTML =
+        '<tr><td colspan="8" class="py-10 text-center text-error">Could not load accounts. <button class="underline font-semibold" onclick="IntegrationsPage.loadClients()">Retry</button></td></tr>';
+    }
+  }
+
+  function deleteRow(id) {
+    const row = document.querySelector(`[data-int-row="${id}"]`);
+    if (row) {
+      row.classList.add('row-removing');
+      setTimeout(() => {
+        clientsCache = clientsCache.filter((c) => c.id !== id);
+        renderClientsTable(clientsCache);
+        showToast('Revoked token permanently deleted', 'success');
+      }, 220);
+    }
+  }
+
+  /* ---------------- Webhooks tab (empty state -> populated) ---------------- */
+  async function renderWebhooks() {
+    const panel = document.getElementById('webhooksPanel');
+    panel.innerHTML =
+      '<span class="material-symbols-outlined spin text-secondary text-[32px]">progress_activity</span>';
+    const hooks = await MockAPI.fetchWebhooks();
+
+    if (hooks.length === 0) {
+      panel.innerHTML = `
+        <div class="relative w-24 h-24 mb-4 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full bg-secondary-fixed/50 animate-ping opacity-25"></div>
+          <div class="relative w-20 h-20 rounded-full bg-surface-container-low flex items-center justify-center text-secondary shadow-sm"><span class="material-symbols-outlined text-[40px]">webhook</span></div>
+        </div>
+        <h3 class="text-lg font-bold text-on-surface mb-2">No Webhook Endpoints Configured Yet</h3>
+        <p class="text-on-surface-variant max-w-md mb-6">Register an HTTPS endpoint to automatically receive asynchronous events such as successful subscription renewals, authorization changes, and rate spikes.</p>
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <button class="flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-secondary text-on-secondary text-[13px] font-semibold hover:bg-secondary-container transition-all shadow-sm" onclick="IntegrationsPage.openCreateModal('webhook')"><span class="material-symbols-outlined text-[18px]">add_link</span><span>Add Webhook Endpoint</span></button>
+          <button class="px-4 py-2.5 rounded-lg bg-surface-container-low text-on-surface text-[13px] font-medium hover:bg-surface-container transition-colors" onclick="showToast('Opening event protocol documentation…', 'info')">Read Event Protocol Docs</button>
+        </div>
+        <div class="mt-8 p-3 rounded-lg bg-surface-container-low max-w-lg w-full text-left">
+          <div class="flex items-center justify-between mb-1"><span class="text-[11px] text-outline font-semibold uppercase tracking-wider">Default Webhook Shape</span><span class="text-xs text-secondary">JSON Schema v2</span></div>
+          <pre class="font-mono text-xs text-on-surface-variant overflow-x-auto leading-tight"><code>{"event": "client.threshold.exceeded", "severity": "alert", "timestamp": 1713401948}</code></pre>
+        </div>`;
+    } else {
+      panel.innerHTML = `<div class="w-full text-left flex flex-col gap-2">${hooks
+        .map(
+          (h) => `
+        <div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-low row-adding">
+          <div class="flex items-center gap-2"><span class="material-symbols-outlined text-secondary text-[18px]">webhook</span><div><p class="font-semibold text-on-surface text-sm">${escapeHtml(h.url)}</p><p class="text-xs text-on-surface-variant">Added ${escapeHtml(h.createdAt)}</p></div></div>
+          <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#ecfdf5] text-[#065f46] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>${escapeHtml(h.status)}</span>
+        </div>`
+        )
+        .join('')}
+        <button class="self-start mt-2 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-container-low text-on-surface text-[13px] font-semibold hover:bg-surface-container transition-all" onclick="IntegrationsPage.openCreateModal('webhook')"><span class="material-symbols-outlined text-[18px]">add</span><span>Add Another Endpoint</span></button>
+      </div>`;
+    }
+  }
+
+  /* ---------------- Telemetry tab (loading -> error/retry -> success) ---------------- */
+  async function loadTelemetry() {
+    const content = document.getElementById('telemetryContent');
+    const badge = document.getElementById('telemetryStatusBadge');
+    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>Streaming telemetry...';
+
+    content.innerHTML = [1, 2, 3]
+      .map(
+        () => `
+      <div class="p-4 rounded-lg bg-surface-container-low/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-pulse">
+        <div class="flex items-center gap-3 w-full sm:w-1/3"><div class="w-10 h-10 rounded-lg bg-surface-container flex-shrink-0"></div><div class="flex flex-col gap-1.5 w-full"><div class="h-3.5 bg-surface-container rounded w-3/4"></div><div class="h-2.5 bg-surface-container rounded w-1/2"></div></div></div>
+        <div class="w-full sm:w-1/4 flex flex-col gap-1.5"><div class="h-3 bg-surface-container rounded w-full"></div><div class="h-2 bg-surface-container rounded w-2/3"></div></div>
+        <div class="w-full sm:w-1/5 flex items-center gap-2"><div class="h-8 bg-surface-container rounded w-16"></div><div class="h-8 bg-surface-container rounded w-12"></div></div>
+      </div>`
+      )
+      .join('');
+
+    try {
+      const data = await MockAPI.fetchTelemetry();
+      badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-[#10b981]"></span>Live';
+      content.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="p-4 rounded-xl bg-surface-container-low"><p class="text-[11px] uppercase tracking-wider text-outline font-semibold mb-1">Throughput</p><p class="text-xl font-bold text-on-surface">${data.throughput}</p></div>
+          <div class="p-4 rounded-xl bg-surface-container-low"><p class="text-[11px] uppercase tracking-wider text-outline font-semibold mb-1">Success Rate</p><p class="text-xl font-bold text-on-surface">${data.successRate}</p></div>
+          <div class="p-4 rounded-xl bg-surface-container-low"><p class="text-[11px] uppercase tracking-wider text-outline font-semibold mb-1">p99 Latency</p><p class="text-xl font-bold text-on-surface">${data.p99}</p></div>
+        </div>`;
+    } catch (err) {
+      badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-error"></span>Connection Failed';
+      content.innerHTML = `
+        <div class="flex flex-col items-center justify-center text-center py-10 gap-3">
+          <span class="material-symbols-outlined text-error text-[36px]">cloud_off</span>
+          <p class="font-semibold text-on-surface">${escapeHtml(err.message)}</p>
+          <p class="text-xs text-on-surface-variant max-w-sm">The telemetry gateway did not respond in time. This is expected on first load in this demo — press retry to simulate a successful reconnect.</p>
+          <button class="mt-1 px-4 py-2 rounded-lg bg-primary text-on-primary text-[13px] font-semibold hover:bg-primary-container transition-colors" onclick="IntegrationsPage.loadTelemetry()">Retry Connection</button>
+        </div>`;
+    }
+  }
+
+  /* ---------------- Audit logs tab ---------------- */
+  async function loadAuditLogs() {
+    const list = document.getElementById('auditLogList');
+    const logs = await MockAPI.fetchAuditLogs();
+    const colors = { REVOKE: 'text-tertiary-fixed-dim', ROTATE: 'text-secondary', WARN: 'text-error' };
+    list.innerHTML = logs
+      .map(
+        (l) => `
+      <div class="p-2 rounded bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div class="flex items-center gap-2"><span class="font-bold ${colors[l.type] || 'text-on-surface'}">[${l.type}]</span><span class="text-on-surface">${escapeHtml(l.message)}</span></div>
+        <span class="text-outline">${escapeHtml(l.ts)}</span>
+      </div>`
+      )
+      .join('');
+  }
+
+  function copyKey(key) {
+    navigator.clipboard
+      .writeText(key)
+      .then(() => showToast('Copied key: ' + key, 'success'))
+      .catch(() => showToast('Copied key: ' + key, 'success'));
+  }
+
+  async function exportCsv() {
+    try {
+      const csv = await MockAPI.exportReport();
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'synthetix-client-accounts.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Exported synthetix-client-accounts.csv', 'success');
+    } catch (err) {
+      showToast('Export failed. Please try again.', 'error');
+    }
+  }
+
+  /* ---------------- Drawer ---------------- */
+  function openDrawer(clientName, clientId) {
+    currentDrawerClientId = clientId;
+    if (clientName) document.getElementById('drawerClientTitle').textContent = clientName;
+    if (clientId) document.getElementById('drawerClientKey').textContent = clientId;
+    openDrawerById('detailDrawerBackdrop', 'detailDrawer');
+  }
+
+  function closeDrawer() {
+    closeDrawerById('detailDrawerBackdrop', 'detailDrawer');
+  }
+
+  async function confirmRevocation() {
+    if (!confirm('Are you certain you want to immediately revoke these credentials? Active traffic will fail.')) {
+      return;
+    }
+    try {
+      await MockAPI.revokeClient(currentDrawerClientId);
+      await loadClients();
+      closeDrawer();
+      showToast('Credentials revoked successfully', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  /* ---------------- Create Integration modal (client or webhook) ---------------- */
+  function openCreateModal(mode) {
+    createMode = mode;
+    const isWebhook = mode === 'webhook';
+    document.getElementById('createIntegrationTitle').textContent = isWebhook
+      ? 'Add Webhook Endpoint'
+      : 'Provision New Integration Key';
+    document.getElementById('createIntegrationSubtitle').textContent = isWebhook
+      ? 'Register an HTTPS endpoint to receive asynchronous platform events.'
+      : 'Creates a high-performance cryptographic API token bound to strict network boundaries and CIDR rules.';
+    document.getElementById('clientNameField').classList.toggle('hidden', isWebhook);
+    document.getElementById('webhookUrlField').classList.toggle('hidden', !isWebhook);
+    document.getElementById('clientExtraFields').classList.toggle('hidden', isWebhook);
+    document.getElementById('originField').classList.toggle('hidden', isWebhook);
+    document.getElementById('createIntegrationSubmitBtn').textContent = isWebhook
+      ? 'Register Endpoint'
+      : 'Generate Token & Secret';
+    openModalById('createIntegrationModal');
+  }
+
+  function closeCreateModal() {
+    closeModalById('createIntegrationModal');
+  }
+
+  async function submitCreateIntegration(e) {
+    e.preventDefault();
+    const btn = document.getElementById('createIntegrationSubmitBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Working…';
+
+    try {
+      if (createMode === 'webhook') {
+        const url = document.getElementById('integrationWebhookUrl').value;
+        await MockAPI.createWebhook({ url });
+        showToast('Webhook endpoint registered', 'success');
+        closeCreateModal();
+        document.getElementById('createIntegrationForm').reset();
+        renderWebhooks();
+      } else {
+        const name = document.getElementById('integrationName').value;
+        const env = document.getElementById('integrationEnv').value;
+        const rateLimit = document.getElementById('integrationRate').value;
+        const origin = document.getElementById('integrationOrigin').value;
+        const record = await MockAPI.createClient({ name, env, rateLimit, origin });
+        clientsCache.unshift(record);
+        renderClientsTable(clientsCache);
+        showToast(`Integration "${record.name}" provisioned successfully`, 'success');
+        closeCreateModal();
+        document.getElementById('createIntegrationForm').reset();
+      }
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+    return false;
+  }
+
+  /* ---------------- Keyboard shortcut: "/" focuses search ---------------- */
+  function bindShortcuts() {
+    window.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        const input = document.getElementById('clientSearch');
+        if (input) input.focus();
+      }
+    });
+  }
+
+  function init() {
+    Nav.highlightActiveLink('integrations');
+    loadClients();
+    bindShortcuts();
+  }
+
+  return {
+    switchTab,
+    filterClients,
+    loadClients,
+    deleteRow,
+    renderWebhooks,
+    loadTelemetry,
+    loadAuditLogs,
+    copyKey,
+    exportCsv,
+    openDrawer,
+    closeDrawer,
+    confirmRevocation,
+    openCreateModal,
+    closeCreateModal,
+    submitCreateIntegration,
+    init,
+  };
+})();
+
+
+
+/* ============ router.js ============ */
+
+/* ============ customers.js ============ */
+/**
+ * CustomersPage — controller for #view-customers
+ */
+const CustomersPage = (() => {
+  let allCustomers = [];
+
+  function fmtMoney(n) {
+    return '$' + Number(n).toLocaleString();
+  }
+
+  function statusBadge(status) {
+    const map = {
+      active: '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#ecfdf5] text-[#065f46] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>Active</span>',
+      trialing: '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#eff6ff] text-[#1e40af] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#3b82f6]"></span>Trialing</span>',
+      churned: '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-outline"></span>Churned</span>',
+    };
+    return map[status] || map.active;
+  }
+
+  function rowHtml(c) {
+    return `
+    <tr class="hover:bg-surface-container-low/60 transition-colors row-adding" data-customer-row="${c.id}">
+      <td class="py-3 px-4"><span class="font-semibold text-on-surface">${escapeHtml(c.name)}</span></td>
+      <td class="py-3 px-4 text-on-surface-variant">${escapeHtml(c.email)}</td>
+      <td class="py-3 px-4"><span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-on-surface text-[11px] font-semibold">${escapeHtml(c.plan)}</span></td>
+      <td class="py-3 px-4 font-semibold text-on-surface">${fmtMoney(c.mrr)}</td>
+      <td class="py-3 px-4 text-xs text-on-surface-variant">${escapeHtml(c.joined)}</td>
+      <td class="py-3 px-4">${statusBadge(c.status)}</td>
+      <td class="py-3 px-4 text-right">
+        <button class="p-1 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface" onclick="showToast('${escapeHtml(c.name)}: ${escapeHtml(c.email)} — ${escapeHtml(c.plan)} plan', 'info')" aria-label="View ${escapeHtml(c.name)}"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+      </td>
+    </tr>`;
+  }
+
+  function renderKpis() {
+    document.getElementById('custKpiTotal').textContent = String(allCustomers.length);
+    document.getElementById('custKpiActive').textContent = String(allCustomers.filter((c) => c.status === 'active').length);
+    document.getElementById('custKpiTrialing').textContent = String(allCustomers.filter((c) => c.status === 'trialing').length);
+    document.getElementById('custKpiMrr').textContent = fmtMoney(allCustomers.reduce((sum, c) => sum + c.mrr, 0));
+  }
+
+  function renderRows(list) {
+    const body = document.getElementById('customersTableBody');
+    body.innerHTML = list.length
+      ? list.map(rowHtml).join('')
+      : '<tr><td colspan="7" class="py-10 text-center text-on-surface-variant">No customers match this search.</td></tr>';
+  }
+
+  function applyFilters() {
+    const q = document.getElementById('customerSearchInput').value.trim().toLowerCase();
+    const filtered = !q
+      ? allCustomers
+      : allCustomers.filter((c) => c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q));
+    renderRows(filtered);
+  }
+
+  async function loadCustomers() {
+    try {
+      allCustomers = await MockAPI.fetchCustomers();
+      renderKpis();
+      renderRows(allCustomers);
+    } catch (err) {
+      document.getElementById('customersTableBody').innerHTML =
+        '<tr><td colspan="7" class="py-10 text-center text-error">Failed to load customers. <button class="underline font-semibold" onclick="CustomersPage.init()">Retry</button></td></tr>';
+    }
+  }
+
+  function openCreateModal() {
+    openModalById('createCustomerModal');
+  }
+
+  async function submitCreate(e) {
+    e.preventDefault();
+    const btn = document.getElementById('createCustomerSubmitBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Adding…';
+    try {
+      const name = document.getElementById('customerName').value;
+      const email = document.getElementById('customerEmail').value;
+      const plan = document.getElementById('customerPlan').value;
+      const record = await MockAPI.createCustomer({ name, email, plan });
+      allCustomers.unshift(record);
+      renderKpis();
+      applyFilters();
+      closeModalById('createCustomerModal');
+      showToast(`${record.name} added as a customer`, 'success');
+      e.target.reset();
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+    return false;
+  }
+
+  function init() {
+    loadCustomers();
+  }
+
+  return { applyFilters, openCreateModal, submitCreate, init };
+})();
+
+/* ============ billing.js ============ */
+/**
+ * BillingPage — controller for #view-billing
+ */
+const BillingPage = (() => {
+  let allInvoices = [];
+
+  function fmtMoney(n) {
+    return '$' + Number(n).toLocaleString();
+  }
+
+  function statusBadge(status) {
+    const map = {
+      paid: '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#ecfdf5] text-[#065f46] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>Paid</span>',
+      pending: '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#fffbeb] text-[#92400e] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#f59e0b]"></span>Pending</span>',
+      overdue: '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-error-container text-error text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-error"></span>Overdue</span>',
+    };
+    return map[status] || map.pending;
+  }
+
+  function rowHtml(inv) {
+    const actionBtn =
+      inv.status === 'paid'
+        ? `<button class="p-1 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface" onclick="showToast('Downloading ${escapeHtml(inv.id)}.pdf', 'info')" aria-label="Download ${escapeHtml(inv.id)}"><span class="material-symbols-outlined text-[18px]">download</span></button>`
+        : `<button class="p-1 rounded-lg hover:bg-surface-container text-outline hover:text-on-surface" onclick="BillingPage.markPaid('${escapeHtml(inv.id)}')" title="Mark as paid" aria-label="Mark ${escapeHtml(inv.id)} paid"><span class="material-symbols-outlined text-[18px]">task_alt</span></button>`;
+    return `
+    <tr class="hover:bg-surface-container-low/60 transition-colors row-adding" data-invoice-row="${inv.id}">
+      <td class="py-3 px-4 font-mono text-xs font-semibold text-on-surface">${escapeHtml(inv.id)}</td>
+      <td class="py-3 px-4 text-on-surface">${escapeHtml(inv.customer)}</td>
+      <td class="py-3 px-4 font-semibold text-on-surface">${fmtMoney(inv.amount)}</td>
+      <td class="py-3 px-4 text-xs text-on-surface-variant">${escapeHtml(inv.issued)}</td>
+      <td class="py-3 px-4">${statusBadge(inv.status)}</td>
+      <td class="py-3 px-4 text-right">${actionBtn}</td>
+    </tr>`;
+  }
+
+  function renderKpis() {
+    const paid = allInvoices.filter((i) => i.status === 'paid').reduce((s, i) => s + i.amount, 0);
+    const pending = allInvoices.filter((i) => i.status === 'pending').reduce((s, i) => s + i.amount, 0);
+    const overdue = allInvoices.filter((i) => i.status === 'overdue').reduce((s, i) => s + i.amount, 0);
+    document.getElementById('billKpiPaid').textContent = fmtMoney(paid);
+    document.getElementById('billKpiPending').textContent = fmtMoney(pending);
+    document.getElementById('billKpiOverdue').textContent = fmtMoney(overdue);
+    document.getElementById('billKpiCount').textContent = String(allInvoices.length);
+  }
+
+  function renderRows(list) {
+    const body = document.getElementById('invoicesTableBody');
+    body.innerHTML = list.length
+      ? list.map(rowHtml).join('')
+      : '<tr><td colspan="6" class="py-10 text-center text-on-surface-variant">No invoices match this filter.</td></tr>';
+  }
+
+  function applyFilters() {
+    const status = document.getElementById('invoiceStatusFilter').value;
+    const filtered = !status ? allInvoices : allInvoices.filter((i) => i.status === status);
+    renderRows(filtered);
+  }
+
+  async function loadInvoices() {
+    try {
+      allInvoices = await MockAPI.fetchInvoices();
+      renderKpis();
+      renderRows(allInvoices);
+    } catch (err) {
+      document.getElementById('invoicesTableBody').innerHTML =
+        '<tr><td colspan="6" class="py-10 text-center text-error">Failed to load invoices. <button class="underline font-semibold" onclick="BillingPage.init()">Retry</button></td></tr>';
+    }
+  }
+
+  async function markPaid(id) {
+    try {
+      await MockAPI.markInvoicePaid(id);
+      await loadInvoices();
+      showToast(`${id} marked as paid`, 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  function openCreateModal() {
+    openModalById('createInvoiceModal');
+  }
+
+  async function submitCreate(e) {
+    e.preventDefault();
+    const btn = document.getElementById('createInvoiceSubmitBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
+    try {
+      const customer = document.getElementById('invoiceCustomer').value;
+      const amount = document.getElementById('invoiceAmount').value;
+      const record = await MockAPI.createInvoice({ customer, amount });
+      allInvoices.unshift(record);
+      renderKpis();
+      applyFilters();
+      closeModalById('createInvoiceModal');
+      showToast(`${record.id} created for ${record.customer}`, 'success');
+      e.target.reset();
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+    return false;
+  }
+
+  function init() {
+    loadInvoices();
+  }
+
+  return { applyFilters, markPaid, openCreateModal, submitCreate, init };
+})();
+
+/* ============ settings.js ============ */
+/**
+ * SettingsPage — controller for #view-settings
+ */
+const SettingsPage = (() => {
+  let team = [];
+
+  function rowHtml(m) {
+    const statusBadge =
+      m.status === 'active'
+        ? '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#ecfdf5] text-[#065f46] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#10b981]"></span>Active</span>'
+        : '<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#eff6ff] text-[#1e40af] text-[11px] font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-[#3b82f6]"></span>Invited</span>';
+    return `
+    <tr class="hover:bg-surface-container-low/60 transition-colors row-adding" data-team-row="${m.id}">
+      <td class="py-3 px-4 font-semibold text-on-surface">${escapeHtml(m.name)}</td>
+      <td class="py-3 px-4 text-on-surface-variant">${escapeHtml(m.email)}</td>
+      <td class="py-3 px-4 text-on-surface">${escapeHtml(m.role)}</td>
+      <td class="py-3 px-4">${statusBadge}</td>
+      <td class="py-3 px-4 text-right">
+        ${
+          m.role === 'Owner'
+            ? '<span class="text-xs text-outline">—</span>'
+            : `<button class="p-1 rounded-lg hover:bg-surface-container text-outline hover:text-error transition-colors" onclick="SettingsPage.removeMember('${m.id}')" title="Remove" aria-label="Remove ${escapeHtml(m.name)}"><span class="material-symbols-outlined text-[18px]">person_remove</span></button>`
+        }
+      </td>
+    </tr>`;
+  }
+
+  function renderTeam() {
+    document.getElementById('teamTableBody').innerHTML = team.map(rowHtml).join('');
+  }
+
+  async function loadTeam() {
+    try {
+      team = await MockAPI.fetchTeamMembers();
+      renderTeam();
+    } catch (err) {
+      document.getElementById('teamTableBody').innerHTML =
+        '<tr><td colspan="5" class="py-10 text-center text-error">Failed to load team. <button class="underline font-semibold" onclick="SettingsPage.init()">Retry</button></td></tr>';
+    }
+  }
+
+  async function removeMember(id) {
+    const row = document.querySelector(`[data-team-row="${id}"]`);
+    if (row) row.classList.add('row-removing');
+    try {
+      await MockAPI.removeTeamMember(id);
+      setTimeout(() => {
+        team = team.filter((m) => m.id !== id);
+        renderTeam();
+        showToast('Team member removed', 'success');
+      }, 220);
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  }
+
+  function openInviteModal() {
+    openModalById('inviteTeamModal');
+  }
+
+  async function submitInvite(e) {
+    e.preventDefault();
+    const btn = document.getElementById('inviteTeamSubmitBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      const name = document.getElementById('inviteName').value;
+      const email = document.getElementById('inviteEmail').value;
+      const role = document.getElementById('inviteRole').value;
+      const record = await MockAPI.inviteTeamMember({ name, email, role });
+      team.push(record);
+      renderTeam();
+      closeModalById('inviteTeamModal');
+      showToast(`Invite sent to ${record.email}`, 'success');
+      e.target.reset();
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+    return false;
+  }
+
+  async function loadWorkspace() {
+    const settings = await MockAPI.fetchWorkspaceSettings();
+    document.getElementById('workspaceName').value = settings.name;
+    document.getElementById('workspaceTimezone').value = settings.timezone;
+    document.getElementById('workspaceCurrency').value = settings.currency;
+  }
+
+  async function saveWorkspace(e) {
+    e.preventDefault();
+    const btn = document.getElementById('saveWorkspaceBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    try {
+      const name = document.getElementById('workspaceName').value;
+      const timezone = document.getElementById('workspaceTimezone').value;
+      const currency = document.getElementById('workspaceCurrency').value;
+      await MockAPI.saveWorkspaceSettings({ name, timezone, currency });
+      showToast('Workspace settings saved', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+    return false;
+  }
+
+  function init() {
+    loadTeam();
+    loadWorkspace();
+  }
+
+  return { removeMember, openInviteModal, submitInvite, saveWorkspace, init };
+})();
+
+/**
+ * Router — tiny single-page-app switcher. Every screen lives in this one
+ * file (auth + five authenticated views); this just shows/hides them and
+ * (re)initialises the relevant controller each time a view becomes active,
+ * exactly like a fresh page load would in a multi-page version.
+ */
+const Router = (() => {
+  let clockStarted = false;
+
+  const APP_VIEWS = ['dashboard', 'integrations', 'customers', 'billing', 'settings'];
+
+  const CONTROLLERS = {
+    dashboard: () => DashboardPage.init(),
+    integrations: () => IntegrationsPage.init(),
+    customers: () => CustomersPage.init(),
+    billing: () => BillingPage.init(),
+    settings: () => SettingsPage.init(),
+  };
+
+  function show(view) {
+    const isAuth = view === 'auth';
+    document.getElementById('view-auth').classList.toggle('hidden', !isAuth);
+    document.getElementById('appShell').classList.toggle('hidden', isAuth);
+
+    if (!isAuth) {
+      APP_VIEWS.forEach((v) => {
+        document.getElementById('view-' + v).classList.toggle('hidden', v !== view);
+      });
+      Nav.highlightActiveLink(view);
+      if (CONTROLLERS[view]) CONTROLLERS[view]();
+    }
+
+    window.location.hash = view;
+    window.scrollTo(0, 0);
+  }
+
+  function init() {
+    AuthPage.init();
+    if (!clockStarted) {
+      Nav.startClock();
+      clockStarted = true;
+    }
+    const requested = window.location.hash.replace('#', '');
+    show(APP_VIEWS.includes(requested) ? requested : 'auth');
+  }
+
+  return { show, init };
+})();
+
+document.addEventListener('DOMContentLoaded', Router.init);
+
+</script>
+</body>
+</html>
